@@ -14,14 +14,26 @@ const db = admin.firestore()
 
 exports.getQualifications = functions.https.onCall(async (data, context) => {
   const qualRef = db.collection("qualifications")
+  const querySnapshot = await qualRef.get()
+  const formattedObject = {}
   if (data) {
-    // do searching
+    // Filter by input
+
+    // Throw an error if data is not a string
+    if (typeof data !== "string") {
+      throw new Error("data object is not a string!")
+    }
+    const filteredSnapshot = querySnapshot.docs.filter(snapshot => {
+      return snapshot.data().name.toLowerCase().includes(data)
+    })
+
+    filteredSnapshot.forEach(documentSnapshot => {
+      formattedObject[documentSnapshot.id] = documentSnapshot.data()
+    })
   } else {
-    const querySnapshot = await qualRef.get()
-    const formattedObject = {}
     querySnapshot.forEach(documentSnapshot => {
       formattedObject[documentSnapshot.id] = documentSnapshot.data()
     })
-    return formattedObject
   }
+  return formattedObject
 })
