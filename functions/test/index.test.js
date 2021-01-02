@@ -59,8 +59,7 @@ describe("Cloud Functions", () => {
     myFunctions = require("../index")
   })
 
-  after(async () => {
-    await deleteCollection(admin.firestore(), "qualifications", 100)
+  after(() => {
     test.cleanup()
   })
 
@@ -84,27 +83,40 @@ describe("Cloud Functions", () => {
     after(async () => {
       await deleteCollection(admin.firestore(), "qualifications", 100)
     })
-    it("should return a list of qualifications when given no data", () => {
+
+    it("should return a list of qualifications when given no data", async () => {
       const data = null
 
       const wrapped = test.wrap(myFunctions.getQualifications)
 
-      return wrapped(data).then(output => {
-        console.log(output)
-        return assert.deepEqual(output, {
-          1: {
-            name: "Sample Qualification 1",
-            description: "The first sample qualification",
-          },
-          2: {
-            name: "Sample Qualification 2",
-            description: "The second sample qualification",
-          },
-          3: {
-            name: "Sample Qualification 3",
-            description: "The third sample qualification",
-          },
-        })
+      output = await wrapped(data)
+      assert.deepEqual(output, {
+        1: {
+          name: "Sample Qualification 1",
+          description: "The first sample qualification",
+        },
+        2: {
+          name: "Sample Qualification 2",
+          description: "The second sample qualification",
+        },
+        3: {
+          name: "Sample Qualification 3",
+          description: "The third sample qualification",
+        },
+      })
+    })
+
+    it("should filter qualifications when given data", async () => {
+      const data = "1"
+
+      const wrapped = test.wrap(myFunctions.getQualifications)
+
+      output = await wrapped(data)
+      assert.deepEqual(output, {
+        1: {
+          name: "Sample Qualification 1",
+          description: "The first sample qualification",
+        },
       })
     })
   })
