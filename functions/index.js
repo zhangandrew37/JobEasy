@@ -33,7 +33,7 @@ exports.getQualifications = functions.https.onCall(async (data, context) => {
   return formattedObject
 })
 
-exports.getMatchingJobs = functions.https.onCall(async (data, context) => {
+exports.getMatchingJobListings = functions.https.onCall(async (data, context) => {
   const jobListings = GeoFirestore.collection("job-listings")
   const qualifications = data.qualifications
   const center = data.center
