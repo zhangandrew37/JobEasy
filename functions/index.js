@@ -33,20 +33,24 @@ exports.getQualifications = functions.https.onCall(async (data, context) => {
   return formattedObject
 })
 
-exports.getMatchingJobListings = functions.https.onCall(async (data, context) => {
-  const jobListings = GeoFirestore.collection("job-listings")
-  const qualifications = data.qualifications
-  const center = data.center
-  const radius = data.radius
+exports.getMatchingJobListings = functions.https.onCall(
+  async (data, context) => {
+    const job = data.job
 
-  const query = jobListings.near({
-    center: new admin.firestore.GeoPoint(center.latitude, center.longitude),
-    radius: radius,
-  })
+    let query = GeoFirestore.collection("jobs").doc(job).collection("listings")
 
-  return query.get().then(value => {
-    return value.docs.map(doc => {
-      return { distance: doc.distance, id: doc.id, data: doc.data() }
+    if (data.location) {
+      // if location exists, filter by location
+      const center = data.location.center
+      const radius = data.location.radius
+      query = query.near({
+        center: new admin.firestore.GeoPoint(center.latitude, center.longitude),
+        radius: radius,
+      })
+    }
+
+    return (await query.get()).docs.map(doc => {
+      return { ...doc, data: doc.data() }
     })
-  })
-})
+  }
+)
