@@ -140,6 +140,7 @@ describe("Cloud Functions", () => {
         salary: "300000",
         coordinates: new admin.firestore.GeoPoint(42.5598, -78.7164),
       })
+    return
   })
 
   after(async () => {
@@ -204,22 +205,34 @@ describe("Cloud Functions", () => {
 
       const wrapped = test.wrap(myFunctions.getMatchingJobListings)
       const output = await wrapped(data)
-      console.log(output)
-      assert.deepEqual(output, [
-        {
-          exists: true,
-          id: "1",
-          data: {
-            g: [Object],
-            name: "Sample Job Listing 1",
-            description: "The first sample job listing",
-            links: [Array],
-            salary: "100000",
-            coordinates: [GeoPoint],
-          },
-          distance: 0,
-        },
-      ])
+      // console.log(JSON.stringify(output, null, 2))
+      assert.deepEqual(
+        output,
+        [
+          {
+            exists: true,
+            id: "1",
+            data: {
+              coordinates: {
+                _latitude: 43.5598,
+                _longitude: -79.7164,
+              },
+              name: "Sample Job Listing 1",
+              description: "The first sample job listing",
+              links: ["https://jfss.ca"],
+              salary: "100000",
+              g: {
+                geohash: "dpxrf1b61p",
+                geopoint: {
+                  _latitude: 43.5598,
+                  _longitude: -79.7164,
+                },
+              },
+            },
+            distance: 0,
+          }
+        ]
+      )
     })
     it("should return an empty list, given there are no listings in range", async () => {
       const data = {
@@ -235,7 +248,8 @@ describe("Cloud Functions", () => {
 
       const wrapped = test.wrap(myFunctions.getMatchingJobListings)
       const output = await wrapped(data)
-      assert.deepEqual(output, [])
+      // console.log(output)
+      assert.isEmpty(output)
     })
   })
 })
