@@ -1,7 +1,7 @@
-import { Link } from "gatsby"
+import { Link as GatsbyLink } from "gatsby"
 import PropTypes from "prop-types"
 import React from "react"
-import { Stack, Heading, Spacer, Button } from "@chakra-ui/react"
+import { Stack, Heading, Spacer, Button, Link } from "@chakra-ui/react"
 
 const Header = ({ siteTitle }) => (
   <Stack
@@ -13,15 +13,19 @@ const Header = ({ siteTitle }) => (
     spacing={4}
     maxW="960px"
   >
-    <Heading as={Link} to="/" color="blue.400">
+    <Heading as={GatsbyLink} to="/" color="blue.400">
       {siteTitle}
     </Heading>
     <Spacer />
-    <Heading size="md">Home</Heading>
-    <Heading size="md">About</Heading>
-    <Button as={Link} to="/contact" colorScheme="blue">
+    <Link as={GatsbyLink}>
+      <Heading size="md">About</Heading>
+    </Link>
+    <Link as={GatsbyLink} to="/contact">
+      <Heading size="md">Contact Us</Heading>
+    </Link>
+    {/* <Button as={GatsbyLink} to="/contact" colorScheme="blue">
       Contact Us
-    </Button>
+    </Button> */}
   </Stack>
 )
 Header.propTypes = {
