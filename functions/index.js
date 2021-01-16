@@ -54,3 +54,35 @@ exports.getMatchingJobListings = functions.https.onCall(
     })
   }
 )
+
+exports.getMatchingJobs = functions.https.onCall(async (data, context) => {
+  // the ID of the qualification
+  const qualifications = data.qualifications
+  if (!qualifications) {
+    let object = {}
+    const data = (await firestore.collection("jobs").get()).forEach(doc => {
+      object[doc.id] = doc.data()
+    })
+    return object
+    // qualifications were not specified
+    // just return all the jobs
+  } else if (Array.isArray(qualifications) && qualifications[0] !== null) {
+    const data = await Promise.all(
+      qualifications.map(async qualification => {
+        const snapshot = await firestore
+          .collection("jobs")
+          .where("qualifications", "array-contains", qualification)
+          .get()
+        let object = {}
+        snapshot.docs.forEach(doc => {
+          object[doc.id] = doc.data()
+        })
+        return object
+      })
+    )
+    const mergedData = data.reduce((r, c) => Object.assign(r, c), {})
+    return mergedData
+  } else {
+    throw Error("qualifications must be an array")
+  }
+})

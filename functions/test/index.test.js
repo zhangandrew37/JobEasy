@@ -81,23 +81,23 @@ describe("Cloud Functions", () => {
 
     // Add jobs
     await firestore.collection("jobs").doc("1").set({
-        name: "Sample Job 1",
-        description: "The first sample job",
-        avgSalary: 100000,
-      qualifications: "1",
-      })
+      name: "Sample Job 1",
+      description: "The first sample job",
+      avgSalary: 100000,
+      qualifications: ["1"],
+    })
     await firestore.collection("jobs").doc("2").set({
-        name: "Sample Job 2",
-        description: "The second sample job",
-        avgSalary: 200000,
-      qualifications: "2",
-      })
+      name: "Sample Job 2",
+      description: "The second sample job",
+      avgSalary: 200000,
+      qualifications: ["2"],
+    })
     await firestore.collection("jobs").doc("3").set({
-        name: "Sample Job 3",
-        description: "The third sample job",
-        avgSalary: 300000,
-      qualifications: "3",
-      })
+      name: "Sample Job 3",
+      description: "The third sample job",
+      avgSalary: 300000,
+      qualifications: ["3"],
+    })
 
     // Add job listings
     await GeoFirestore.collection("jobs")
@@ -273,6 +273,55 @@ describe("Cloud Functions", () => {
           distance: null,
         },
       ])
+    })
+  })
+
+  describe("getMatchingJobs", () => {
+    it("should return all jobs if qualifications were not specified", async () => {
+      const data = {}
+
+      const wrapped = test.wrap(myFunctions.getMatchingJobs)
+      const output = await wrapped(data)
+      assert.deepEqual(output, {
+        1: {
+          name: "Sample Job 1",
+          description: "The first sample job",
+          avgSalary: 100000,
+          qualifications: ["1"],
+        },
+        2: {
+          name: "Sample Job 2",
+          description: "The second sample job",
+          avgSalary: 200000,
+          qualifications: ["2"],
+        },
+        3: {
+          name: "Sample Job 3",
+          description: "The third sample job",
+          avgSalary: 300000,
+          qualifications: ["3"],
+        },
+      })
+    })
+    it("should return any jobs that match the search", async () => {
+      const data = { qualifications: ["1", "3"] }
+
+      const wrapped = test.wrap(myFunctions.getMatchingJobs)
+      const output = await wrapped(data)
+      assert.deepEqual(output, {
+        1: {
+          name: "Sample Job 1",
+          description: "The first sample job",
+          avgSalary: 100000,
+          qualifications: ["1"],
+        },
+        3: {
+          name: "Sample Job 3",
+          description: "The third sample job",
+          avgSalary: 300000,
+          qualifications: ["3"],
+        },
+      })
     })
   })
 })
