@@ -56,7 +56,9 @@ async function deleteQueryBatch(db, query, resolve) {
 describe("Cloud Functions", () => {
   let myFunctions, firestore, GeoFirestore
 
-  before(async () => {
+  before(async function () {
+    this.timeout(10000)
+
     // add functions
     myFunctions = require("../index")
 
@@ -85,7 +87,7 @@ describe("Cloud Functions", () => {
         name: "Sample Job 1",
         description: "The first sample job",
         avgSalary: 100000,
-        qualifications: firestore.collection("qualifications").doc("1"),
+        qualifications: [firestore.collection("qualifications").doc("1")],
       })
     await firestore
       .collection("jobs")
@@ -94,7 +96,7 @@ describe("Cloud Functions", () => {
         name: "Sample Job 2",
         description: "The second sample job",
         avgSalary: 200000,
-        qualifications: firestore.collection("qualifications").doc("2"),
+        qualifications: [firestore.collection("qualifications").doc("2")],
       })
     await firestore
       .collection("jobs")
@@ -103,7 +105,7 @@ describe("Cloud Functions", () => {
         name: "Sample Job 3",
         description: "The third sample job",
         avgSalary: 300000,
-        qualifications: firestore.collection("qualifications").doc("3"),
+        qualifications: [firestore.collection("qualifications").doc("3")],
       })
 
     // Add job listings
@@ -140,10 +142,10 @@ describe("Cloud Functions", () => {
         salary: "300000",
         coordinates: new admin.firestore.GeoPoint(42.5598, -78.7164),
       })
-    return
   })
 
-  after(async () => {
+  after(async function () {
+    this.timeout(10000)
     await deleteCollection(firestore, "qualifications", 100)
     await deleteCollection(firestore, "jobs", 100)
     await deleteCollection(firestore, "jobs/1/listings", 100)
@@ -206,33 +208,30 @@ describe("Cloud Functions", () => {
       const wrapped = test.wrap(myFunctions.getMatchingJobListings)
       const output = await wrapped(data)
       // console.log(JSON.stringify(output, null, 2))
-      assert.deepEqual(
-        output,
-        [
-          {
-            exists: true,
-            id: "1",
-            data: {
-              coordinates: {
+      assert.deepEqual(output, [
+        {
+          exists: true,
+          id: "1",
+          data: {
+            coordinates: {
+              _latitude: 43.5598,
+              _longitude: -79.7164,
+            },
+            name: "Sample Job Listing 1",
+            description: "The first sample job listing",
+            links: ["https://jfss.ca"],
+            salary: "100000",
+            g: {
+              geohash: "dpxrf1b61p",
+              geopoint: {
                 _latitude: 43.5598,
                 _longitude: -79.7164,
               },
-              name: "Sample Job Listing 1",
-              description: "The first sample job listing",
-              links: ["https://jfss.ca"],
-              salary: "100000",
-              g: {
-                geohash: "dpxrf1b61p",
-                geopoint: {
-                  _latitude: 43.5598,
-                  _longitude: -79.7164,
-                },
-              },
             },
-            distance: 0,
-          }
-        ]
-      )
+          },
+          distance: 0,
+        },
+      ])
     })
     it("should return an empty list, given there are no listings in range", async () => {
       const data = {
@@ -250,6 +249,39 @@ describe("Cloud Functions", () => {
       const output = await wrapped(data)
       // console.log(output)
       assert.isEmpty(output)
+    })
+    it("should return an all data if no location is passed to it", async () => {
+      const data = {
+        job: "1",
+      }
+
+      const wrapped = test.wrap(myFunctions.getMatchingJobListings)
+      const output = await wrapped(data)
+      // console.log(output)
+      assert.deepEqual(output, [
+        {
+          exists: true,
+          id: "1",
+          data: {
+            coordinates: {
+              _latitude: 43.5598,
+              _longitude: -79.7164,
+            },
+            name: "Sample Job Listing 1",
+            description: "The first sample job listing",
+            links: ["https://jfss.ca"],
+            salary: "100000",
+            g: {
+              geohash: "dpxrf1b61p",
+              geopoint: {
+                _latitude: 43.5598,
+                _longitude: -79.7164,
+              },
+            },
+          },
+          distance: null,
+        },
+      ])
     })
   })
 })
