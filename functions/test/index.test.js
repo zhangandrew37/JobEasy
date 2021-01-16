@@ -80,32 +80,23 @@ describe("Cloud Functions", () => {
     })
 
     // Add jobs
-    await firestore
-      .collection("jobs")
-      .doc("1")
-      .set({
+    await firestore.collection("jobs").doc("1").set({
         name: "Sample Job 1",
         description: "The first sample job",
         avgSalary: 100000,
-        qualifications: [firestore.collection("qualifications").doc("1")],
+      qualifications: "1",
       })
-    await firestore
-      .collection("jobs")
-      .doc("2")
-      .set({
+    await firestore.collection("jobs").doc("2").set({
         name: "Sample Job 2",
         description: "The second sample job",
         avgSalary: 200000,
-        qualifications: [firestore.collection("qualifications").doc("2")],
+      qualifications: "2",
       })
-    await firestore
-      .collection("jobs")
-      .doc("3")
-      .set({
+    await firestore.collection("jobs").doc("3").set({
         name: "Sample Job 3",
         description: "The third sample job",
         avgSalary: 300000,
-        qualifications: [firestore.collection("qualifications").doc("3")],
+      qualifications: "3",
       })
 
     // Add job listings
