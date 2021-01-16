@@ -1,19 +1,14 @@
 const functions = require("firebase-functions")
-const admin = require("firebase-admin")
+var admin = require("firebase-admin")
+var geofirestore = require("geofirestore")
+
 admin.initializeApp()
 
-const db = admin.firestore()
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+const firestore = admin.firestore()
+const GeoFirestore = geofirestore.initializeApp(firestore)
 
 exports.getQualifications = functions.https.onCall(async (data, context) => {
-  const qualRef = db.collection("qualifications")
+  const qualRef = firestore.collection("qualifications")
   const querySnapshot = await qualRef.get()
   const formattedObject = {}
   if (data) {
@@ -36,4 +31,58 @@ exports.getQualifications = functions.https.onCall(async (data, context) => {
     })
   }
   return formattedObject
+})
+
+exports.getMatchingJobListings = functions.https.onCall(
+  async (data, context) => {
+    const job = data.job
+
+    let query = GeoFirestore.collection("jobs").doc(job).collection("listings")
+
+    if (data.location) {
+      // if location exists, filter by location
+      const center = data.location.center
+      const radius = data.location.radius
+      query = query.near({
+        center: new admin.firestore.GeoPoint(center.latitude, center.longitude),
+        radius: radius,
+      })
+    }
+
+    return (await query.get()).docs.map(doc => {
+      return { ...doc, data: doc.data() }
+    })
+  }
+)
+
+exports.getMatchingJobs = functions.https.onCall(async (data, context) => {
+  // the ID of the qualification
+  const qualifications = data.qualifications
+  if (!qualifications) {
+    let object = {}
+    const data = (await firestore.collection("jobs").get()).forEach(doc => {
+      object[doc.id] = doc.data()
+    })
+    return object
+    // qualifications were not specified
+    // just return all the jobs
+  } else if (Array.isArray(qualifications) && qualifications[0] !== null) {
+    const data = await Promise.all(
+      qualifications.map(async qualification => {
+        const snapshot = await firestore
+          .collection("jobs")
+          .where("qualifications", "array-contains", qualification)
+          .get()
+        let object = {}
+        snapshot.docs.forEach(doc => {
+          object[doc.id] = doc.data()
+        })
+        return object
+      })
+    )
+    const mergedData = data.reduce((r, c) => Object.assign(r, c), {})
+    return mergedData
+  } else {
+    throw Error("qualifications must be an array")
+  }
 })
