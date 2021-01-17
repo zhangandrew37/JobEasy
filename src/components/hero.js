@@ -11,10 +11,10 @@ const Hero = () => (
       Maybe a subheading too
     </Heading>
     <SimpleGrid columns={2} spacing={6}>
-      <Box h="200px" bg="gray.400"></Box>
-      <Box h="200px" bg="gray.400"></Box>
-      <Box h="200px" bg="gray.400"></Box>
-      <Box h="200px" bg="gray.400"></Box>
+      <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
+      <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
+      <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
+      <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
     </SimpleGrid>
   </Box>
 )
