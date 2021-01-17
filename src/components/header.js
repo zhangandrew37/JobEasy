@@ -13,7 +13,12 @@ const Header = ({ siteTitle }) => (
     spacing={4}
     maxW="960px"
   >
-    <Heading as={GatsbyLink} to="/" color="blue.400">
+    <Heading
+      as={GatsbyLink}
+      to="/"
+      bgGradient="linear(to-r,blue.400,green.300)"
+      bgClip="text"
+    >
       {siteTitle}
     </Heading>
     <Spacer />
