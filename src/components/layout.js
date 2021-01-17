@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
   return (
     <VStack>
       <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
-      <Stack as="main" w="100%" maxW="960px" p={[0, 4, 6]}>
+      <Stack as="main" w="100%" maxW="960px" pt={0} px={4} pb={6}>
         {children}
       </Stack>
     </VStack>

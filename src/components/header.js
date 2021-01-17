@@ -8,7 +8,8 @@ const Header = ({ siteTitle }) => (
     as="header"
     direction="row"
     w="100%"
-    p={[6, 4]}
+    py={6}
+    px={4}
     alignItems="center"
     spacing={4}
     maxW="960px"
