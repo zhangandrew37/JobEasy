@@ -4,18 +4,6 @@ import Map from "./map"
 import { chakra } from "@chakra-ui/system"
 import { Box, Spinner } from "@chakra-ui/react"
 
-const getLocation = async () => {
-  return new Promise((resolve, reject) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        resolve(pos)
-      })
-    } else {
-      reject()
-    }
-  })
-}
-
 export default {
   title: "Components/Map",
   component: Map,
@@ -29,18 +17,8 @@ export default {
 }
 
 export const Default = args => {
-  const [location, setLocation] = useState()
+  const location = [0, 0]
 
-  useEffect(() => {
-    getLocation().then(data => {
-      setLocation(data)
-    })
-  }, [])
-
-  return (
-    <Box boxSize="md">
-      {location ? <Map {...args} location={location} /> : <Spinner />}
-    </Box>
-  )
+  return <Map {...args} startingLocation={location} />
 }
 // Default.args = { siteTitle: "Title" }
