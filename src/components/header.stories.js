@@ -16,5 +16,5 @@ export default {
   ],
 }
 
-export const Basic = args => <Header {...args} />
-Basic.args = { siteTitle: "Title" }
+export const Default = args => <Header {...args} />
+Default.args = { siteTitle: "Title" }
