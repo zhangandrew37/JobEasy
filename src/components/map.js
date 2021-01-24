@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import L from "leaflet"
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
   useMapEvents,
+  Circle,
 } from "react-leaflet"
 import { Helmet } from "react-helmet"
 import {
@@ -20,6 +22,7 @@ import {
   InputRightElement,
 } from "@chakra-ui/react"
 import { FaCrosshairs } from "react-icons/fa"
+import ReactDOMServer from "react-dom/server"
 
 const MapControls = ({ map, locRef }) => {
   return (
@@ -30,11 +33,12 @@ const MapControls = ({ map, locRef }) => {
           <Link
             color="gray.300"
             onClick={useCallback(() => {
-              if (locRef.current) {
-                map.flyTo(locRef.current, map.getZoom())
-              } else {
-                map.locate()
-              }
+              // if (locRef.current) {
+              //   map.flyTo(locRef.current.latlng, map.getZoom())
+              // } else {
+              //   map.locate()
+              // }
+              map.locate()
             }, [map])}
           >
             <FaCrosshairs />
@@ -75,6 +79,43 @@ const Map = ({ center, zoom, setMap, children }) => {
   )
 }
 
+const CurrentLocationMarker = ({ locRef }) => {
+  const locationDot = L.divIcon({
+    html: ReactDOMServer.renderToString(
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        width="16"
+        height="16"
+        fill="none"
+      >
+        <circle
+          circle
+          r="5"
+          cx="8"
+          cy="8"
+          style={{ fill: "#3287ff", stroke: "gray", strokeWidth: "0.1" }}
+        />
+      </svg>
+    ),
+    iconSize: [16, 16],
+    className: "icon",
+    iconAnchor: [8, 8]
+  })
+  console.log(locRef.current)
+  return locRef.current ? (
+    <>
+      <Circle
+        center={locRef.current.latlng}
+        radius={locRef.current.accuracy}
+      ></Circle>
+      <Marker position={locRef.current.latlng} icon={locationDot}>
+        <Popup>You are here</Popup>
+      </Marker>
+    </>
+  ) : null
+}
+
 export default () => {
   const [map, setMap] = useState(null)
   const [loc, _setLoc] = useState(null)
@@ -88,17 +129,25 @@ export default () => {
   useEffect(() => {
     if (map) {
       map.addEventListener("locationfound", e => {
-        setLoc(e.latlng)
+        setLoc(e)
         map.flyTo(e.latlng, map.getZoom())
       })
     }
   })
+  // useMapEvents({
+  //   locationfound(e) {
+  //     e.accuracy
+  //   }
+  // })
 
   return (
     <Stack direction="row" width="100%" height="lg" spacing={4}>
       <MapControls map={map} locRef={locRef} />
       <Map center={[43.5598, -79.7164]} zoom={13} setMap={setMap}>
-        {locRef.current ? <Marker position={locRef.current}></Marker> : null}
+        <CurrentLocationMarker locRef={locRef} />
+        <Marker position={[43.5598, -79.7164]}>
+          <Popup>A test location</Popup>
+        </Marker>
       </Map>
     </Stack>
   )

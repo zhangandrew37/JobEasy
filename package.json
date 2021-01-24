@@ -25,7 +25,8 @@
     "react-dom": "^16.14.0",
     "react-helmet": "^6.1.0",
     "react-icons": "^4.1.0",
-    "react-leaflet": "^3.0.5"
+    "react-leaflet": "^3.0.5",
+    "react-leaflet-div-icon": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
