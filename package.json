@@ -9,6 +9,7 @@
     "@chakra-ui/react": "^1.1.4",
     "@emotion/react": "^11.1.2",
     "@emotion/styled": "^11.0.0",
+    "algolia-places-react": "^1.6.1",
     "framer-motion": "^2.9.5",
     "gatsby": "^2.26.1",
     "gatsby-image": "^2.5.0",
