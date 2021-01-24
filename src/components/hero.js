@@ -5,7 +5,6 @@ import { FaArrowRight } from "react-icons/fa"
 import { Link, BrowserRouter as Router } from "react-router-dom"
 
 import HeroImage from "../images/undraw_Co_workers_re_1i6i.svg"
-import SecondPage from "./pages/SecondPage"
 
 const Hero = () => (
   <Box>
