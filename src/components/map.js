@@ -94,13 +94,17 @@ const CurrentLocationMarker = ({ locRef }) => {
           r="5"
           cx="8"
           cy="8"
-          style={{ fill: "#3287ff", stroke: "gray", strokeWidth: "0.1" }}
+          style={{
+            fill: "#3287ff",
+            stroke: "white",
+            strokeWidth: "2",
+          }}
         />
       </svg>
     ),
     iconSize: [16, 16],
     className: "icon",
-    iconAnchor: [8, 8]
+    iconAnchor: [8, 8],
   })
   console.log(locRef.current)
   return locRef.current ? (
