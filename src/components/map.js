@@ -100,15 +100,15 @@ const CurrentLocationMarker = ({ locRef }) => {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         version="1.1"
-        width="16"
-        height="16"
+        width="32"
+        height="32"
         fill="none"
       >
         <circle
           circle
-          r="5"
-          cx="8"
-          cy="8"
+          r="8"
+          cx="16"
+          cy="16"
           style={{
             fill: "#3287ff",
             stroke: "white",
@@ -117,9 +117,9 @@ const CurrentLocationMarker = ({ locRef }) => {
         />
       </svg>
     ),
-    iconSize: [16, 16],
+    iconSize: [32, 32],
     className: "icon",
-    iconAnchor: [8, 8],
+    iconAnchor: [16, 16],
   })
   console.log(locRef.current)
   return locRef.current ? (
