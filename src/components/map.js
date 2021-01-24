@@ -20,56 +20,77 @@ import {
   InputLeftElement,
   Link,
   InputRightElement,
+  ModalOverlay,
+  ModalContent,
+  useDisclosure,
+  ModalCloseButton,
+  Modal,
+  ModalBody,
+  Spinner,
 } from "@chakra-ui/react"
 import { FaCrosshairs } from "react-icons/fa"
 import ReactDOMServer from "react-dom/server"
 import AlgoliaPlaces from "algolia-places-react"
 
 const MapControls = ({ mapRef, locRef, setLoc }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [locating, setLocating] = useState(false)
   return (
-    <Stack flex="0 0 400px">
+    <Stack flex="0 0 250px">
       <Heading>Controls</Heading>
-      <AlgoliaPlaces
-        placeholder="Write an address here"
-        options={{
-          appId: "plVXF13Y9ZDS",
-          apiKey: "111642e29abbad7b099607607173a059",
-          language: "en",
-          aroundLatLngViaIP: true,
-        }}
-        onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => {
-          console.log(suggestion)
-          const loc = {
-            latlng: [suggestion.latlng.lat, suggestion.latlng.lng],
-            accuracy: 0,
-          }
-          setLoc(loc)
-          mapRef.current.flyTo(loc.latlng, mapRef.current.getZoom())
-        }}
-        onError={({ message }) => {
-          console.error(message)
-        }}
-        onLocate={async () => {
-          try {
-            const loc = await new Promise((resolve, reject) => {
-              navigator.geolocation.getCurrentPosition(
-                pos => {
-                  resolve({
-                    latlng: [pos.coords.latitude, pos.coords.longitude],
-                    accuracy: pos.coords.accuracy,
-                  })
-                },
-                err => reject(err)
-              )
-            })
-            console.log(loc)
-            setLoc(loc)
-            mapRef.current.flyTo(loc.latlng, mapRef.current.getZoom())
-          } catch (err) {
-            console.error(`Geolocate Failed: ${err}`)
-          }
-        }}
-      ></AlgoliaPlaces>
+      <Button onClick={onOpen} isLoading={locating} loadingText="Locating">
+        Set Location
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <AlgoliaPlaces
+            placeholder="Write an address here"
+            options={{
+              appId: "plVXF13Y9ZDS",
+              apiKey: "111642e29abbad7b099607607173a059",
+              language: "en",
+              aroundLatLngViaIP: true,
+            }}
+            onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => {
+              console.log(suggestion)
+              const loc = {
+                latlng: [suggestion.latlng.lat, suggestion.latlng.lng],
+                accuracy: 0,
+              }
+              setLoc(loc)
+              mapRef.current.flyTo(loc.latlng, mapRef.current.getZoom())
+              onClose()
+            }}
+            onError={({ message }) => {
+              console.error(message)
+            }}
+            onLocate={async () => {
+              try {
+                onClose()
+                setLocating(true)
+                const loc = await new Promise((resolve, reject) => {
+                  navigator.geolocation.getCurrentPosition(
+                    pos => {
+                      resolve({
+                        latlng: [pos.coords.latitude, pos.coords.longitude],
+                        accuracy: pos.coords.accuracy,
+                      })
+                    },
+                    err => reject(err)
+                  )
+                })
+                setLoc(loc)
+                setLocating(false)
+                mapRef.current.flyTo(loc.latlng, mapRef.current.getZoom())
+              } catch (err) {
+                setLocating(false)
+                console.error(`Geolocate Failed: ${err}`)
+              }
+            }}
+          ></AlgoliaPlaces>
+        </ModalContent>
+      </Modal>
     </Stack>
   )
 }
