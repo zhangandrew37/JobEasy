@@ -13,7 +13,8 @@ import { Stack, VStack } from "@chakra-ui/react"
 
 import Header from "./header"
 
-const Layout = ({ children }) => {
+const Layout = ({ children, maxWidth }) => {
+  maxWidth = maxWidth ? maxWidth : "1600px"
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -26,8 +27,11 @@ const Layout = ({ children }) => {
 
   return (
     <VStack>
-      <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
-      <Stack as="main" w="100%" maxW="960px" pt={0} px={4} pb={6}>
+      <Header
+        siteTitle={data.site.siteMetadata?.title || `Title`}
+        maxWidth={maxWidth}
+      />
+      <Stack as="main" w="100%" maxW={maxWidth} pt={0} px={4} pb={6}>
         {children}
       </Stack>
     </VStack>

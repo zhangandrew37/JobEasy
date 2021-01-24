@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Box, Heading, SimpleGrid, Image, Flex, Button } from "@chakra-ui/react"
+import { Box, Heading, SimpleGrid, Image, Flex, Button, Spacer } from "@chakra-ui/react"
 import { FaArrowRight } from "react-icons/fa"
 
 import HeroImage from "../images/undraw_Co_workers_re_1i6i.svg"
@@ -24,6 +24,7 @@ const Hero = () => (
           Get Started
         </Button>
       </Box>
+      <Spacer />
       <Image h="auto" flexBasis={{ base: "sm", md: "xl" }} as={HeroImage} />
       {/* <Image
         as={HeroImage}
