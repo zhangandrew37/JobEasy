@@ -10,7 +10,7 @@ const IndexPage = () => (
   <Layout>
     <SEO title="Home" />
     <Box height="180px">
-      <Map />
+      <Map startingLocation={[43.5598, -79.7164]} />
     </Box>
   </Layout>
 )

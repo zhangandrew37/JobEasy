@@ -53,29 +53,21 @@ const MapControls = ({ map, locRef }) => {
 
 const Map = ({ center, zoom, setMap, children }) => {
   return (
-    <>
-      <Helmet>
-        <link
-          rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css"
-        />
-      </Helmet>
-      <Box
-        as={MapContainer}
-        w="100%"
-        h="100%"
-        center={center}
-        zoom={zoom}
-        scrollWheelZoom={false}
-        whenCreated={setMap}
-      >
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {children}
-      </Box>
-    </>
+    <Box
+      as={MapContainer}
+      w="100%"
+      h="100%"
+      center={center}
+      zoom={zoom}
+      scrollWheelZoom={false}
+      whenCreated={setMap}
+    >
+      <TileLayer
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {children}
+    </Box>
   )
 }
 
@@ -147,12 +139,14 @@ export default () => {
   return (
     <Stack direction="row" width="100%" height="lg" spacing={4}>
       <MapControls map={map} locRef={locRef} />
-      <Map center={[43.5598, -79.7164]} zoom={13} setMap={setMap}>
-        <CurrentLocationMarker locRef={locRef} />
-        <Marker position={[43.5598, -79.7164]}>
-          <Popup>A test location</Popup>
-        </Marker>
-      </Map>
+      {typeof window !== "undefined" ? (
+        <Map center={[43.5598, -79.7164]} zoom={13} setMap={setMap}>
+          <CurrentLocationMarker locRef={locRef} />
+          <Marker position={[43.5598, -79.7164]}>
+            <Popup>A test location</Popup>
+          </Marker>
+        </Map>
+      ) : null}
     </Stack>
   )
 }
