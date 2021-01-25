@@ -1,40 +1,30 @@
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import L from "leaflet"
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-  Circle,
-} from "react-leaflet"
-import { Helmet } from "react-helmet"
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet"
 import {
   Box,
   Button,
-  Flex,
   Heading,
   Stack,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  InputRightElement,
   ModalOverlay,
   ModalContent,
   useDisclosure,
-  ModalCloseButton,
   Modal,
-  ModalBody,
-  Spinner,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  FormControl,
+  FormLabel,
+  FormHelperText,
 } from "@chakra-ui/react"
-import { FaCrosshairs } from "react-icons/fa"
 import ReactDOMServer from "react-dom/server"
 import AlgoliaPlaces from "algolia-places-react"
 
 const MapControls = ({ mapRef, locRef, setLoc }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
+  const [distance, setDistance] = useState(10)
   return (
     <Stack flex="0 0 250px">
       <Heading>Controls</Heading>
@@ -44,7 +34,8 @@ const MapControls = ({ mapRef, locRef, setLoc }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <AlgoliaPlaces
+          <Box
+            as={AlgoliaPlaces}
             placeholder="Write an address here"
             options={{
               appId: "plVXF13Y9ZDS",
@@ -88,9 +79,23 @@ const MapControls = ({ mapRef, locRef, setLoc }) => {
                 console.error(`Geolocate Failed: ${err}`)
               }
             }}
-          ></AlgoliaPlaces>
+          />
         </ModalContent>
       </Modal>
+      <FormControl>
+        <FormLabel htmlFor="search-radius">Search Radius</FormLabel>
+        <Slider
+          aria-label="search-radius"
+          defaultValue={10}
+          onChange={number => setDistance(number)}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb></SliderThumb>
+        </Slider>
+        <FormHelperText>{distance} km</FormHelperText>
+      </FormControl>
     </Stack>
   )
 }
@@ -103,7 +108,6 @@ const Map = ({ center, zoom, setMap, children }) => {
       h="100%"
       center={center}
       zoom={zoom}
-      scrollWheelZoom={false}
       whenCreated={setMap}
     >
       <TileLayer
@@ -126,7 +130,6 @@ const CurrentLocationMarker = ({ locRef }) => {
         fill="none"
       >
         <circle
-          circle
           r="8"
           cx="16"
           cy="16"
@@ -179,12 +182,12 @@ export default () => {
   // })
 
   return (
-    <Stack direction="row" width="100%" height="lg" spacing={4}>
+    <Stack direction="row" width="100%" height="700px" spacing={4}>
       <MapControls mapRef={mapRef} locRef={locRef} setLoc={setLoc} />
       {typeof window !== "undefined" ? (
         <Map center={[43.5598, -79.7164]} zoom={13} setMap={setMap}>
           <CurrentLocationMarker locRef={locRef} />
-          <Marker position={[43.5598, -79.7164]}>
+          <Marker position={[43.5598, -79.7164]} riseOnHover={true}>
             <Popup>A test location</Popup>
           </Marker>
         </Map>
