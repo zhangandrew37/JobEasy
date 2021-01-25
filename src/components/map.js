@@ -16,17 +16,22 @@ import {
   SliderThumb,
   FormControl,
   FormLabel,
-  FormHelperText,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Flex,
 } from "@chakra-ui/react"
 import ReactDOMServer from "react-dom/server"
 import AlgoliaPlaces from "algolia-places-react"
 
-const MapControls = ({ mapRef, locRef, setLoc }) => {
+const MapControls = ({ mapRef, setLoc, radiusRef, setRadius }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
-  const [distance, setDistance] = useState(10)
+
   return (
-    <Stack flex="0 0 250px">
+    <Stack flex="0 0 300px">
       <Heading>Controls</Heading>
       <Button onClick={onOpen} isLoading={locating} loadingText="Locating">
         Set Location
@@ -83,39 +88,38 @@ const MapControls = ({ mapRef, locRef, setLoc }) => {
         </ModalContent>
       </Modal>
       <FormControl>
-        <FormLabel htmlFor="search-radius">Search Radius</FormLabel>
-        <Slider
-          aria-label="search-radius"
-          defaultValue={10}
-          onChange={number => setDistance(number)}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb></SliderThumb>
-        </Slider>
-        <FormHelperText>{distance} km</FormHelperText>
+        <FormLabel htmlFor="search-radius">Search Radius (km)</FormLabel>
+        <Flex>
+          <NumberInput
+            maxW="150px"
+            mr="2rem"
+            onChange={valueString => setRadius(valueString)}
+            value={radiusRef.current}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+
+          <Slider
+            flex="1"
+            aria-label="search-radius"
+            defaultValue={10}
+            max={80}
+            step={0.5}
+            onChange={number => setRadius(number)}
+          >
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb></SliderThumb>
+          </Slider>
+        </Flex>
+        {/* <FormHelperText>{radiusRef.current} km</FormHelperText> */}
       </FormControl>
     </Stack>
-  )
-}
-
-const Map = ({ center, zoom, setMap, children }) => {
-  return (
-    <Box
-      as={MapContainer}
-      w="100%"
-      h="100%"
-      center={center}
-      zoom={zoom}
-      whenCreated={setMap}
-    >
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {children}
-    </Box>
   )
 }
 
@@ -145,13 +149,9 @@ const CurrentLocationMarker = ({ locRef }) => {
     className: "icon",
     iconAnchor: [16, 16],
   })
-  console.log(locRef.current)
   return locRef.current ? (
     <>
-      <Circle
-        center={locRef.current.latlng}
-        radius={locRef.current.accuracy}
-      ></Circle>
+      <Circle center={locRef.current.latlng} radius={locRef.current.accuracy} />
       <Marker position={locRef.current.latlng} icon={locationDot}>
         <Popup>You are here</Popup>
       </Marker>
@@ -159,9 +159,14 @@ const CurrentLocationMarker = ({ locRef }) => {
   ) : null
 }
 
-export default () => {
+/**
+ * A component displaying a map and controls
+ * @param {{qualifications: Qualification[]}} param0 An object with the required qualifications
+ */
+const MapComponent = ({ qualifications }) => {
   const [map, _setMap] = useState(null)
   const [loc, _setLoc] = useState(null)
+  const [radius, _setRadius] = useState(10)
 
   const mapRef = useRef(map)
   const setMap = data => {
@@ -175,23 +180,53 @@ export default () => {
     _setLoc(data)
   }
 
-  // useMapEvents({
-  //   locationfound(e) {
-  //     e.accuracy
-  //   }
-  // })
+  const radiusRef = useRef(radius)
+  const setRadius = data => {
+    radiusRef.current = data
+    _setRadius(data)
+  }
 
   return (
-    <Stack direction="row" width="100%" height="700px" spacing={4}>
-      <MapControls mapRef={mapRef} locRef={locRef} setLoc={setLoc} />
+    <Stack
+      direction={{ base: "column", md: "row" }}
+      width="100%"
+      height="700px"
+      spacing={4}
+    >
+      <MapControls
+        mapRef={mapRef}
+        setLoc={setLoc}
+        radiusRef={radiusRef}
+        setRadius={setRadius}
+      />
       {typeof window !== "undefined" ? (
-        <Map center={[43.5598, -79.7164]} zoom={13} setMap={setMap}>
+        <Box
+          as={MapContainer}
+          w="100%"
+          h="100%"
+          center={[43.5598, -79.7164]}
+          zoom={13}
+          whenCreated={setMap}
+        >
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
           <CurrentLocationMarker locRef={locRef} />
           <Marker position={[43.5598, -79.7164]} riseOnHover={true}>
             <Popup>A test location</Popup>
           </Marker>
-        </Map>
+          {locRef.current ? (
+            <Circle
+              center={locRef.current.latlng}
+              radius={radiusRef.current * 1000}
+              color="#777777"
+            />
+          ) : null}
+        </Box>
       ) : null}
     </Stack>
   )
 }
+
+export default MapComponent
