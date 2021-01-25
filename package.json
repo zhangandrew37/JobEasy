@@ -5,8 +5,8 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
-    "@chakra-ui/gatsby-plugin": "^1.0.0",
-    "@chakra-ui/react": "^1.0.3",
+    "@chakra-ui/gatsby-plugin": "^1.0.1",
+    "@chakra-ui/react": "^1.1.4",
     "@emotion/react": "^11.1.2",
     "@emotion/styled": "^11.0.0",
     "framer-motion": "^2.9.5",
@@ -15,23 +15,27 @@
     "gatsby-plugin-manifest": "^2.6.1",
     "gatsby-plugin-offline": "^3.4.0",
     "gatsby-plugin-react-helmet": "^3.4.0",
+    "gatsby-plugin-react-svg": "^3.0.0",
     "gatsby-plugin-sharp": "^2.8.0",
     "gatsby-source-filesystem": "^2.5.0",
     "gatsby-transformer-sharp": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-helmet": "^6.1.0"
+    "react-helmet": "^6.1.0",
+    "react-icons": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/eyes-storybook": "^3.16.3",
     "@babel/core": "^7.12.10",
     "@storybook/addon-actions": "^6.1.14",
+    "@storybook/addon-controls": "^6.1.14",
     "@storybook/addon-essentials": "^6.1.14",
     "@storybook/addon-links": "^6.1.14",
     "@storybook/react": "^6.1.14",
     "babel-loader": "^8.2.2",
-    "prettier": "2.1.2"
+    "babel-preset-react-app": "^10.0.0",
+    "prettier": "2.1.2",
+    "storybook-addon-performance": "^0.14.0"
   },
   "keywords": [
     "gatsby"

@@ -1,54 +1,38 @@
-import { Link } from "gatsby"
+import { Link as GatsbyLink } from "gatsby"
 import PropTypes from "prop-types"
 import React from "react"
-import Button from "./button"
+import { Stack, Heading, Spacer, Button, Link } from "@chakra-ui/react"
 
 const Header = ({ siteTitle }) => (
-  <header
-    style={{
-      backgroundColor: "white",
-      marginBottom: `1.45rem`,
-    }}
+  <Stack
+    as="header"
+    direction="row"
+    w="100%"
+    py={6}
+    px={4}
+    alignItems="center"
+    spacing={4}
+    maxW="960px"
   >
-    <div
-      style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
+    <Heading
+      as={GatsbyLink}
+      to="/"
+      bgGradient="linear(to-r,blue.400,green.300)"
+      bgClip="text"
     >
-      <h1 style={{ margin: 0, fontWeight: "700", fontSize: "32px" }}>
-        <Link
-          to="/"
-          style={{
-            color: `#4895EF`,
-            textDecoration: `none`,
-          }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          minWidth: "200px",
-        }}
-      >
-        <h1 style={{ fontWeight: "500" }}>Home</h1>
-        <h1 style={{ fontWeight: "500" }}>About</h1>
-      </div>
-      <Link to="/page-2/">
-        <Button text="Contact Us" />
-      </Link>{" "}
-      <br />
-    </div>
-  </header>
+      {siteTitle}
+    </Heading>
+    <Spacer />
+    <Link as={GatsbyLink}>
+      <Heading size="md">About</Heading>
+    </Link>
+    <Link as={GatsbyLink} to="/contact">
+      <Heading size="md">Contact Us</Heading>
+    </Link>
+    {/* <Button as={GatsbyLink} to="/contact" colorScheme="blue">
+      Contact Us
+    </Button> */}
+  </Stack>
 )
 Header.propTypes = {
   siteTitle: PropTypes.string,
