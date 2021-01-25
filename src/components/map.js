@@ -26,7 +26,7 @@ import {
 import ReactDOMServer from "react-dom/server"
 import AlgoliaPlaces from "algolia-places-react"
 
-const MapControls = ({ mapRef, setLoc, radiusRef, setRadius }) => {
+const MapControls = ({ mapRef, locRef, setLoc, radiusRef, setRadius }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
 
@@ -87,7 +87,7 @@ const MapControls = ({ mapRef, setLoc, radiusRef, setRadius }) => {
           />
         </ModalContent>
       </Modal>
-      <FormControl>
+      <FormControl isDisabled={!locRef.current}>
         <FormLabel htmlFor="search-radius">Search Radius (km)</FormLabel>
         <Flex>
           <NumberInput
@@ -95,6 +95,7 @@ const MapControls = ({ mapRef, setLoc, radiusRef, setRadius }) => {
             mr="2rem"
             onChange={valueString => setRadius(valueString)}
             value={radiusRef.current}
+            isDisabled={!locRef.current}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -110,6 +111,7 @@ const MapControls = ({ mapRef, setLoc, radiusRef, setRadius }) => {
             max={80}
             step={0.5}
             onChange={number => setRadius(number)}
+            isDisabled={!locRef.current}
           >
             <SliderTrack>
               <SliderFilledTrack />
@@ -195,6 +197,7 @@ const MapComponent = ({ qualifications }) => {
     >
       <MapControls
         mapRef={mapRef}
+        locRef={locRef}
         setLoc={setLoc}
         radiusRef={radiusRef}
         setRadius={setRadius}
