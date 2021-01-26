@@ -37,7 +37,6 @@ module.exports = {
       resolve: `gatsby-plugin-react-svg`,
       options: {
         rule: {
-<<<<<<< HEAD
           include: /images/
         }
       } 
@@ -51,12 +50,7 @@ module.exports = {
           projectId: "ics4u0-project",
           storageBucket: "ics4u0-project.appspot.com",
           messagingSenderId: "673612403722",
-          appId: "1:673612403722:web:a64815ec5c08a2655c7bf3"
-        }
-      }
-    }
-=======
-          include: /images/,
+          appId: "1:673612403722:web:a64815ec5c08a2655c7bf3",
         },
       },
     },
@@ -66,7 +60,6 @@ module.exports = {
         linkStyles: true,
       },
     },
->>>>>>> e00d628ebb40af01157c142dab106e914a5e0b02
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

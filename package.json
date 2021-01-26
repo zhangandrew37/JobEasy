@@ -9,12 +9,7 @@
     "@chakra-ui/react": "^1.1.6",
     "@emotion/react": "^11.1.2",
     "@emotion/styled": "^11.0.0",
-<<<<<<< HEAD
-    "chakra-ui-autocomplete": "^1.2.5",
-    "firebase": "^8.2.4",
-=======
     "algolia-places-react": "^1.6.1",
->>>>>>> e00d628ebb40af01157c142dab106e914a5e0b02
     "framer-motion": "^2.9.5",
     "gatsby": "^2.26.1",
     "gatsby-image": "^2.5.0",
