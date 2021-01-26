@@ -1,7 +1,11 @@
 import React from "react"
 import { Link as GatsbyLink } from "gatsby"
 
+<<<<<<< HEAD
 import { Box, Heading, SimpleGrid, Image, Flex, Button, Link } from "@chakra-ui/react"
+=======
+import { Box, Heading, SimpleGrid, Image, Flex, Button, Spacer } from "@chakra-ui/react"
+>>>>>>> e00d628ebb40af01157c142dab106e914a5e0b02
 import { FaArrowRight } from "react-icons/fa"
 
 import HeroImage from "../images/undraw_Co_workers_re_1i6i.svg"
@@ -27,6 +31,7 @@ const Hero = () => (
           </Button>
         </Link>
       </Box>
+      <Spacer />
       <Image h="auto" flexBasis={{ base: "sm", md: "xl" }} as={HeroImage} />
       {/* <Image
         as={HeroImage}

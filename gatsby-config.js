@@ -5,7 +5,12 @@ module.exports = {
     author: `@gatsbyjs`,
   },
   plugins: [
-    `@chakra-ui/gatsby-plugin`,
+    {
+      resolve: `@chakra-ui/gatsby-plugin`,
+      options: {
+        portalZIndex: 99999,
+      },
+    },
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-filesystem`,
@@ -29,9 +34,10 @@ module.exports = {
       },
     },
     {
-      resolve: "gatsby-plugin-react-svg",
+      resolve: `gatsby-plugin-react-svg`,
       options: {
         rule: {
+<<<<<<< HEAD
           include: /images/
         }
       } 
@@ -49,6 +55,18 @@ module.exports = {
         }
       }
     }
+=======
+          include: /images/,
+        },
+      },
+    },
+    {
+      resolve: `gatsby-plugin-react-leaflet`,
+      options: {
+        linkStyles: true,
+      },
+    },
+>>>>>>> e00d628ebb40af01157c142dab106e914a5e0b02
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,
