@@ -44,7 +44,7 @@ const CurrentLocationMarker = ({ locRef }) => {
 
 /**
  * A component displaying a map and controls
- * @param {{qualifications: Qualification[]}} param0 An object with the required qualifications
+ * @param {{qualifications: {Qualification.}}} param0 An object with the required qualifications
  */
 const MapComponent = ({ qualifications }) => {
   const [map, _setMap] = useState(null)
@@ -82,6 +82,7 @@ const MapComponent = ({ qualifications }) => {
         setLoc={setLoc}
         radiusRef={radiusRef}
         setRadius={setRadius}
+        qualifications={qualifications}
       />
       {typeof window !== "undefined" ? (
         <Box

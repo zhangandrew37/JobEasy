@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Box,
   Button,
@@ -22,10 +22,56 @@ import {
   Flex,
 } from "@chakra-ui/react"
 import AlgoliaPlaces from "algolia-places-react"
+import firebase from "gatsby-plugin-firebase"
 
-const MapControls = ({ mapRef, locRef, setLoc, radiusRef, setRadius }) => {
+const MapControls = ({
+  mapRef,
+  locRef,
+  setLoc,
+  radiusRef,
+  setRadius,
+  qualifications,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      const getMatchingJobs = firebase
+        .functions()
+        .httpsCallable("getMatchingJobs")
+      const getMatchingJobListings = firebase
+        .functions()
+        .httpsCallable("getMatchingJobListings")
+      const jobs = await getMatchingJobs({
+        qualifications: qualifications?.keys(),
+      })
+      console.log(jobs)
+      Promise.all(
+        Object.keys(jobs.data).map(async key => {
+          console.log(key)
+          let data = {
+            job: key,
+          }
+          if (locRef.current && radiusRef.current) {
+            data = {
+              ...data,
+              location: {
+                center: {
+                  latitude: locRef.current.latlng[0],
+                  longitude: locRef.current.latlng[1],
+                },
+                radius: radiusRef.current,
+              },
+            }
+          }
+          const jobListings = await getMatchingJobListings(data)
+          console.log(jobListings)
+        })
+      )
+    }
+    asyncFunc()
+  }, [locRef, radiusRef, qualifications, radiusRef.current, locRef.current])
 
   return (
     <Stack flex="0 0 300px">
