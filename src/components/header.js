@@ -1,7 +1,7 @@
 import { Link as GatsbyLink } from "gatsby"
 import PropTypes from "prop-types"
 import React from "react"
-import { Stack, Heading, Spacer, Button, Link } from "@chakra-ui/react"
+import { Stack, Heading, Spacer, Link } from "@chakra-ui/react"
 
 const Header = ({ siteTitle, maxWidth }) => (
   <Stack
