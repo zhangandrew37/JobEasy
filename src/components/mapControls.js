@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import {
   Box,
   Button,
@@ -22,7 +22,6 @@ import {
   Flex,
 } from "@chakra-ui/react"
 import AlgoliaPlaces from "algolia-places-react"
-import firebase from "gatsby-plugin-firebase"
 
 const MapControls = ({
   map,
@@ -30,60 +29,11 @@ const MapControls = ({
   handleLocChange,
   radius,
   setRadius,
-  qualifications,
-  handleJobsChange,
+  setQueryRadius,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
-  const [queryRadius, setQueryRadius] = useState(radius)
   // move to parent component
-  useEffect(() => {
-    const asyncFunc = async () => {
-      try {
-        const getMatchingJobs = firebase
-          .functions()
-          .httpsCallable("getMatchingJobs")
-        const getMatchingJobListings = firebase
-          .functions()
-          .httpsCallable("getMatchingJobListings")
-        let tempJobs = (
-          await getMatchingJobs({
-            qualifications: qualifications?.keys(),
-          })
-        ).data
-        console.log(tempJobs)
-        await Promise.all(
-          Object.keys(tempJobs).map(async key => {
-            console.log(key)
-            let data = {
-              job: key,
-            }
-            if (loc && queryRadius) {
-              data = {
-                ...data,
-                location: {
-                  center: {
-                    latitude: loc.latlng[0],
-                    longitude: loc.latlng[1],
-                  },
-                  radius: queryRadius,
-                },
-              }
-            }
-            console.log(JSON.stringify(data))
-            tempJobs[key] = {
-              ...tempJobs[key],
-              listings: (await getMatchingJobListings(data)).data,
-            }
-          })
-        )
-        handleJobsChange(tempJobs)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    asyncFunc()
-  }, [loc, queryRadius, qualifications, handleJobsChange])
 
   return (
     <Stack flex="0 0 300px">

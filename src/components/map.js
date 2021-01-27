@@ -1,8 +1,9 @@
-import React, { useRef, useState, useCallback, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { divIcon } from "leaflet"
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet"
 import { Box, Stack } from "@chakra-ui/react"
 import ReactDOMServer from "react-dom/server"
+import firebase from "gatsby-plugin-firebase"
 
 import MapControls from "./mapControls"
 
@@ -50,42 +51,89 @@ const MapComponent = ({ qualifications }) => {
   const [map, setMap] = useState(null)
   const [loc, setLoc] = useState(null)
   const [radius, setRadius] = useState(10)
-  const [jobs, setJobs] = useState()
+  const [queryRadius, setQueryRadius] = useState(radius)
   const [markers, setMarkers] = useState([])
 
   const handleLocChange = newLoc => {
     setLoc(newLoc)
   }
 
-  const handleJobsChange = useCallback(newJobs => {
-    setJobs(newJobs)
-  }, [])
-
   useEffect(() => {
-    const tmpMarkers = []
-    if (jobs) {
-      Object.keys(jobs).forEach(key => {
-        jobs[key].listings.forEach(item => {
-          tmpMarkers.push(
-            <Marker
-              position={[
-                item.data.coordinates._latitude,
-                item.data.coordinates._longitude,
-              ]}
-              riseOnHover
-            >
-              <Popup>
-                <b>
-                  {item.data.name} - {item.data.company}
-                </b>
-              </Popup>
-            </Marker>
-          )
-        })
-      })
+    const asyncFunc = async () => {
+      try {
+        // set refs
+        const getMatchingJobs = firebase
+          .functions()
+          .httpsCallable("getMatchingJobs")
+        const getMatchingJobListings = firebase
+          .functions()
+          .httpsCallable("getMatchingJobListings")
+
+        // get jobs
+        let jobs = (
+          await getMatchingJobs({
+            qualifications: qualifications?.keys(),
+          })
+        ).data
+        // console.log(tempJobs)
+
+        // loop through jobs, getting matching listings
+        await Promise.all(
+          Object.keys(jobs).map(async key => {
+            console.log(key)
+            let data = {
+              job: key,
+            }
+            if (loc && queryRadius) {
+              data = {
+                ...data,
+                location: {
+                  center: {
+                    latitude: loc.latlng[0],
+                    longitude: loc.latlng[1],
+                  },
+                  radius: queryRadius,
+                },
+              }
+            }
+            console.log(JSON.stringify(data))
+            jobs[key] = {
+              ...jobs[key],
+              listings: (await getMatchingJobListings(data)).data,
+            }
+          })
+        )
+
+        // apply markers
+        const tmpMarkers = []
+        if (jobs) {
+          Object.keys(jobs).forEach(key => {
+            jobs[key].listings.forEach(item => {
+              tmpMarkers.push(
+                <Marker
+                  position={[
+                    item.data.coordinates._latitude,
+                    item.data.coordinates._longitude,
+                  ]}
+                  riseOnHover
+                >
+                  <Popup>
+                    <b>
+                      {item.data.name} - {item.data.company}
+                    </b>
+                  </Popup>
+                </Marker>
+              )
+            })
+          })
+        }
+        setMarkers(tmpMarkers)
+      } catch (err) {
+        console.error(err)
+      }
     }
-    setMarkers(tmpMarkers)
-  }, [jobs])
+    asyncFunc()
+  }, [loc, queryRadius, qualifications])
 
   return (
     <Stack
@@ -100,8 +148,8 @@ const MapComponent = ({ qualifications }) => {
         handleLocChange={handleLocChange}
         radius={radius}
         setRadius={setRadius}
+        setQueryRadius={setQueryRadius}
         qualifications={qualifications}
-        handleJobsChange={handleJobsChange}
       />
       {typeof window !== "undefined" ? (
         <Box
