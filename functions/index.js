@@ -58,30 +58,35 @@ exports.getMatchingJobListings = functions.https.onCall(
 exports.getMatchingJobs = functions.https.onCall(async (data, context) => {
   // the ID of the qualification
   const qualifications = data.qualifications
+  let obj = {}
+  const out = (await firestore.collection("jobs").get()).forEach(doc => {
+    obj[doc.id] = doc.data()
+  })
+
   if (!qualifications) {
-    let object = {}
-    const data = (await firestore.collection("jobs").get()).forEach(doc => {
-      object[doc.id] = doc.data()
-    })
-    return object
     // qualifications were not specified
     // just return all the jobs
+    return obj
   } else if (Array.isArray(qualifications) && qualifications[0] !== null) {
-    const data = await Promise.all(
-      qualifications.map(async qualification => {
-        const snapshot = await firestore
-          .collection("jobs")
-          .where("qualifications", "array-contains", qualification)
-          .get()
-        let object = {}
-        snapshot.docs.forEach(doc => {
-          object[doc.id] = doc.data()
+    // qualifications were specified, filter them
+    // convert the user qualifications into an object where the key is the
+    // qualification id, and the value is the index
+    var qualObj = {}
+
+    qualifications.forEach((el, idx) => {
+      qualObj[el] = idx
+    })
+
+    const filtered = Object.fromEntries(
+      Object.entries(obj).filter(([id, data]) => {
+        // loop through the job qualifications, and return true if the user
+        // has all the qualifications needed
+        return data.qualifications.every(el => {
+          return qualObj[el] !== undefined
         })
-        return object
       })
     )
-    const mergedData = data.reduce((r, c) => Object.assign(r, c), {})
-    return mergedData
+    return filtered
   } else {
     throw Error("qualifications must be an array")
   }
