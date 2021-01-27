@@ -25,53 +25,65 @@ import AlgoliaPlaces from "algolia-places-react"
 import firebase from "gatsby-plugin-firebase"
 
 const MapControls = ({
-  mapRef,
-  locRef,
-  setLoc,
-  radiusRef,
+  map,
+  loc,
+  handleLocChange,
+  radius,
   setRadius,
   qualifications,
+  handleJobsChange,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
-
+  const [queryRadius, setQueryRadius] = useState(radius)
+  // move to parent component
   useEffect(() => {
     const asyncFunc = async () => {
-      const getMatchingJobs = firebase
-        .functions()
-        .httpsCallable("getMatchingJobs")
-      const getMatchingJobListings = firebase
-        .functions()
-        .httpsCallable("getMatchingJobListings")
-      const jobs = await getMatchingJobs({
-        qualifications: qualifications?.keys(),
-      })
-      console.log(jobs)
-      Promise.all(
-        Object.keys(jobs.data).map(async key => {
-          console.log(key)
-          let data = {
-            job: key,
-          }
-          if (locRef.current && radiusRef.current) {
-            data = {
-              ...data,
-              location: {
-                center: {
-                  latitude: locRef.current.latlng[0],
-                  longitude: locRef.current.latlng[1],
-                },
-                radius: radiusRef.current,
-              },
+      try {
+        const getMatchingJobs = firebase
+          .functions()
+          .httpsCallable("getMatchingJobs")
+        const getMatchingJobListings = firebase
+          .functions()
+          .httpsCallable("getMatchingJobListings")
+        let tempJobs = (
+          await getMatchingJobs({
+            qualifications: qualifications?.keys(),
+          })
+        ).data
+        console.log(tempJobs)
+        await Promise.all(
+          Object.keys(tempJobs).map(async key => {
+            console.log(key)
+            let data = {
+              job: key,
             }
-          }
-          const jobListings = await getMatchingJobListings(data)
-          console.log(jobListings)
-        })
-      )
+            if (loc && queryRadius) {
+              data = {
+                ...data,
+                location: {
+                  center: {
+                    latitude: loc.latlng[0],
+                    longitude: loc.latlng[1],
+                  },
+                  radius: queryRadius,
+                },
+              }
+            }
+            console.log(JSON.stringify(data))
+            tempJobs[key] = {
+              ...tempJobs[key],
+              listings: (await getMatchingJobListings(data)).data,
+            }
+          })
+        )
+        handleJobsChange(tempJobs)
+      } catch (err) {
+        console.error(err)
+      }
     }
     asyncFunc()
-  }, [locRef, radiusRef, qualifications, radiusRef.current, locRef.current])
+  }, [loc, queryRadius, qualifications, handleJobsChange])
 
   return (
     <Stack flex="0 0 300px">
@@ -92,14 +104,14 @@ const MapControls = ({
               aroundLatLngViaIP: true,
             }}
             onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => {
+              onClose()
               console.log(suggestion)
-              const loc = {
+              const tmpLoc = {
                 latlng: [suggestion.latlng.lat, suggestion.latlng.lng],
                 accuracy: 0,
               }
-              setLoc(loc)
-              mapRef.current.flyTo(loc.latlng, mapRef.current.getZoom())
-              onClose()
+              handleLocChange(tmpLoc)
+              map.flyTo(tmpLoc.latlng, map.getZoom())
             }}
             onError={({ message }) => {
               console.error(message)
@@ -108,7 +120,7 @@ const MapControls = ({
               try {
                 onClose()
                 setLocating(true)
-                const loc = await new Promise((resolve, reject) => {
+                const tmpLoc = await new Promise((resolve, reject) => {
                   navigator.geolocation.getCurrentPosition(
                     pos => {
                       resolve({
@@ -119,9 +131,9 @@ const MapControls = ({
                     err => reject(err)
                   )
                 })
-                setLoc(loc)
+                handleLocChange(tmpLoc)
                 setLocating(false)
-                mapRef.current.flyTo(loc.latlng, mapRef.current.getZoom())
+                map.flyTo(tmpLoc.latlng, map.getZoom())
               } catch (err) {
                 setLocating(false)
                 console.error(`Geolocate Failed: ${err}`)
@@ -130,15 +142,15 @@ const MapControls = ({
           />
         </ModalContent>
       </Modal>
-      <FormControl isDisabled={!locRef.current}>
+      <FormControl isDisabled={!loc}>
         <FormLabel htmlFor="search-radius">Search Radius (km)</FormLabel>
         <Flex>
           <NumberInput
             maxW="100px"
             mr="2rem"
             onChange={valueString => setRadius(valueString)}
-            value={radiusRef.current}
-            isDisabled={!locRef.current}
+            value={radius}
+            isDisabled={!loc}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -154,7 +166,8 @@ const MapControls = ({
             max={80}
             step={0.5}
             onChange={number => setRadius(number)}
-            isDisabled={!locRef.current}
+            onChangeEnd={number => setQueryRadius(number)}
+            isDisabled={!loc}
           >
             <SliderTrack>
               <SliderFilledTrack />

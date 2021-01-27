@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useCallback, useEffect } from "react"
 import { divIcon } from "leaflet"
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet"
 import { Box, Stack } from "@chakra-ui/react"
@@ -6,7 +6,7 @@ import ReactDOMServer from "react-dom/server"
 
 import MapControls from "./mapControls"
 
-const CurrentLocationMarker = ({ locRef }) => {
+const CurrentLocationMarker = ({ loc }) => {
   const locationDot = divIcon({
     html: ReactDOMServer.renderToString(
       <svg
@@ -32,10 +32,10 @@ const CurrentLocationMarker = ({ locRef }) => {
     className: "icon",
     iconAnchor: [16, 16],
   })
-  return locRef.current ? (
+  return loc ? (
     <>
-      <Circle center={locRef.current.latlng} radius={locRef.current.accuracy} />
-      <Marker position={locRef.current.latlng} icon={locationDot}>
+      <Circle center={loc.latlng} radius={loc.accuracy} />
+      <Marker position={loc.latlng} icon={locationDot}>
         <Popup>You are here</Popup>
       </Marker>
     </>
@@ -47,27 +47,45 @@ const CurrentLocationMarker = ({ locRef }) => {
  * @param {{qualifications: {Qualification.}}} param0 An object with the required qualifications
  */
 const MapComponent = ({ qualifications }) => {
-  const [map, _setMap] = useState(null)
-  const [loc, _setLoc] = useState(null)
-  const [radius, _setRadius] = useState(10)
+  const [map, setMap] = useState(null)
+  const [loc, setLoc] = useState(null)
+  const [radius, setRadius] = useState(10)
+  const [jobs, setJobs] = useState()
+  const [markers, setMarkers] = useState([])
 
-  const mapRef = useRef(map)
-  const setMap = data => {
-    mapRef.current = data
-    _setMap(data)
+  const handleLocChange = newLoc => {
+    setLoc(newLoc)
   }
 
-  const locRef = useRef(loc)
-  const setLoc = data => {
-    locRef.current = data
-    _setLoc(data)
-  }
+  const handleJobsChange = useCallback(newJobs => {
+    setJobs(newJobs)
+  }, [])
 
-  const radiusRef = useRef(radius)
-  const setRadius = data => {
-    radiusRef.current = data
-    _setRadius(data)
-  }
+  useEffect(() => {
+    const tmpMarkers = []
+    if (jobs) {
+      Object.keys(jobs).forEach(key => {
+        jobs[key].listings.forEach(item => {
+          tmpMarkers.push(
+            <Marker
+              position={[
+                item.data.coordinates._latitude,
+                item.data.coordinates._longitude,
+              ]}
+              riseOnHover
+            >
+              <Popup>
+                <b>
+                  {item.data.name} - {item.data.company}
+                </b>
+              </Popup>
+            </Marker>
+          )
+        })
+      })
+    }
+    setMarkers(tmpMarkers)
+  }, [jobs])
 
   return (
     <Stack
@@ -77,12 +95,13 @@ const MapComponent = ({ qualifications }) => {
       spacing={4}
     >
       <MapControls
-        mapRef={mapRef}
-        locRef={locRef}
-        setLoc={setLoc}
-        radiusRef={radiusRef}
+        map={map}
+        loc={loc}
+        handleLocChange={handleLocChange}
+        radius={radius}
         setRadius={setRadius}
         qualifications={qualifications}
+        handleJobsChange={handleJobsChange}
       />
       {typeof window !== "undefined" ? (
         <Box
@@ -90,24 +109,22 @@ const MapComponent = ({ qualifications }) => {
           w="100%"
           h="100%"
           center={[43.5598, -79.7164]}
-          zoom={13}
+          zoom={11}
           whenCreated={setMap}
         >
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <CurrentLocationMarker locRef={locRef} />
-          <Marker position={[43.5598, -79.7164]} riseOnHover={true}>
-            <Popup>A test location</Popup>
-          </Marker>
-          {locRef.current ? (
+          <CurrentLocationMarker loc={loc} />
+          {loc ? (
             <Circle
-              center={locRef.current.latlng}
-              radius={radiusRef.current * 1000}
+              center={loc.latlng}
+              radius={radius * 1000}
               color="#777777"
             />
           ) : null}
+          {markers}
         </Box>
       ) : null}
     </Stack>
