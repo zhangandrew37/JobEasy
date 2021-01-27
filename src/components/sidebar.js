@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import ReactDOMServer from "react-dom/server"
 import {
   Box,
   Button,
@@ -20,25 +21,78 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Flex,
+  Link,
+  Text,
 } from "@chakra-ui/react"
 import AlgoliaPlaces from "algolia-places-react"
 
-const MapControls = ({
+const Sidebar = ({
   map,
   loc,
   handleLocChange,
   radius,
   setRadius,
   setQueryRadius,
+  jobs,
+  popupRefs,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
   // move to parent component
 
+  const yeetTheorem = () => {
+    let output = []
+    if (jobs) {
+      Object.keys(jobs).forEach(jobId => {
+        output.push(
+          <Heading size="md" key={jobId}>
+            {jobs[jobId].name}
+          </Heading>
+        )
+        jobs[jobId].listings.forEach(listing => {
+          output.push(
+            <Box
+              onClick={
+                popupRefs
+                  ? () => {
+                      console.log(popupRefs[listing.id])
+                      map.openPopup(
+                        popupRefs[listing.id].ref.current,
+                        popupRefs[listing.id].coords
+                      )
+                      // map.openPopup("fuqu", [43.5598, -79.7164])
+                    }
+                  : null
+              }
+              key={listing.id}
+            >
+              <Heading size="sm">
+                {listing.data.name} - {listing.data.company}
+              </Heading>
+              <Text>{listing.data.description}</Text>
+              <Text>{listing.data.salary}</Text>
+              {listing.data.links.map((link, idx) => (
+                <Link href={link} key={idx}>
+                  {link}
+                </Link>
+              ))}
+            </Box>
+          )
+        })
+      })
+    }
+    return output
+  }
+
   return (
-    <Stack flex="0 0 300px">
+    <Stack flex="0 0 300px" overflow="scroll">
       <Heading>Controls</Heading>
-      <Button onClick={onOpen} isLoading={locating} loadingText="Locating">
+      <Button
+        onClick={onOpen}
+        isLoading={locating}
+        loadingText="Locating"
+        flex="0 0 40px"
+      >
         Set Location
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -96,7 +150,7 @@ const MapControls = ({
         <FormLabel htmlFor="search-radius">Search Radius (km)</FormLabel>
         <Flex>
           <NumberInput
-            maxW="100px"
+            maxW="75px"
             mr="2rem"
             onChange={valueString => setRadius(valueString)}
             value={radius}
@@ -127,8 +181,9 @@ const MapControls = ({
         </Flex>
         {/* <FormHelperText>{radiusRef.current} km</FormHelperText> */}
       </FormControl>
+      {yeetTheorem()}
     </Stack>
   )
 }
 
-export default MapControls
+export default Sidebar
