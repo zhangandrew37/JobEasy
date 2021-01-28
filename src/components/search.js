@@ -1,20 +1,33 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { CUIAutoComplete } from 'chakra-ui-autocomplete'
 import firebase from "gatsby-plugin-firebase"
+import "firebase/firestore"
 
-const qualifications = [
-  { value: "ghana", label: "Ghana" },
-  { value: "nigeria", label: "Nigeria" },
-  { value: "kenya", label: "Kenya" },
-  { value: "southAfrica", label: "South Africa" },
-  { value: "unitedStates", label: "United States" },
-  { value: "canada", label: "Canada" },
-  { value: "germany", label: "Germany" }
-];
 
-export default function search() {
-  const [pickerItems, setPickerItems] = React.useState(qualifications);
-  const [selectedItems, setSelectedItems] = React.useState([]);
+export default function Search() {
+  const [pickerItems, setPickerItems] = useState([{}]);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  // only runs on component mount
+  useEffect(() => {
+    // firebase ref
+    const db = firebase.firestore();
+    // array of options
+    let qualifications = [];
+    // get data from firebase
+    const snapshot = db.collection('qualifications').get().then((querySnapshot) => {
+      // handle data in callback
+      querySnapshot.forEach((doc) => {
+        // push as value label pairs into array
+        qualifications.push({
+          value: doc.data().value,
+          label: doc.data().label
+        })
+      })
+      // update picker
+      setPickerItems(qualifications)
+    });
+  },[])
 
   const handleCreateItem = (item) => {
     setPickerItems((curr) => [...curr, item]);
@@ -28,15 +41,15 @@ export default function search() {
   };
 
   return (
-        <CUIAutoComplete
-          label="Input all relevant qualifications"
-          placeholder="Type a qualification"
-          onCreateItem={handleCreateItem}
-          items={pickerItems}
-          selectedItems={selectedItems}
-          onSelectedItemsChange={(changes) =>
-            handleSelectedItemsChange(changes.selectedItems)
-          }
-        />
+      <CUIAutoComplete
+        label="Input all relevant qualifications"
+        placeholder="Type a qualification"
+        onCreateItem={handleCreateItem}
+        items={pickerItems}
+        selectedItems={selectedItems}
+        onSelectedItemsChange={(changes) =>
+          handleSelectedItemsChange(changes.selectedItems)
+        }
+      />
   );
 }
