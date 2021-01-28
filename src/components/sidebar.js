@@ -40,7 +40,7 @@ const Sidebar = ({
   const [locating, setLocating] = useState(false)
   // move to parent component
 
-  const yeetTheorem = () => {
+  const JobList = () => {
     let output = []
     if (jobs) {
       Object.keys(jobs).forEach(jobId => {
@@ -181,7 +181,7 @@ const Sidebar = ({
         </Flex>
         {/* <FormHelperText>{radiusRef.current} km</FormHelperText> */}
       </FormControl>
-      {yeetTheorem()}
+      <JobList />
     </Stack>
   )
 }
