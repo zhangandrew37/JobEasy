@@ -192,20 +192,6 @@ describe("Cloud Functions", () => {
     })
   })
 
-  describe("getQualification", () => {
-    it("should return the content of a qualification if given the id", async () => {
-      const data = "1"
-
-      const wrapped = test.wrap(myFunctions.getQualification)
-      const output = await wrapped(data)
-
-      assert.deepEqual(output, {
-        description: "The first sample qualification",
-        name: "Sample Qualification 1",
-      })
-    })
-  })
-
   describe("getMatchingJobListings", () => {
     it("should return a list of matching listings, given the location", async () => {
       const data = {
@@ -311,18 +297,48 @@ describe("Cloud Functions", () => {
           description: "The first sample job",
           avgSalary: 100000,
           qualifications: ["1"],
+          qualificationsData: [
+            {
+              description: "The first sample qualification",
+              name: "Sample Qualification 1",
+            },
+          ],
         },
         2: {
           name: "Sample Job 2",
           description: "The second sample job",
           avgSalary: 200000,
           qualifications: ["1", "2"],
+          qualificationsData: [
+            {
+              description: "The first sample qualification",
+              name: "Sample Qualification 1",
+            },
+            {
+              description: "The second sample qualification",
+              name: "Sample Qualification 2",
+            },
+          ],
         },
         3: {
           name: "Sample Job 3",
           description: "The third sample job",
           avgSalary: 300000,
           qualifications: ["1", "2", "3"],
+          qualificationsData: [
+            {
+              description: "The first sample qualification",
+              name: "Sample Qualification 1",
+            },
+            {
+              description: "The second sample qualification",
+              name: "Sample Qualification 2",
+            },
+            {
+              description: "The third sample qualification",
+              name: "Sample Qualification 3",
+            },
+          ],
         },
       })
     })
@@ -337,12 +353,28 @@ describe("Cloud Functions", () => {
           description: "The first sample job",
           avgSalary: 100000,
           qualifications: ["1"],
+          qualificationsData: [
+            {
+              description: "The first sample qualification",
+              name: "Sample Qualification 1",
+            },
+          ],
         },
         2: {
           name: "Sample Job 2",
           description: "The second sample job",
           avgSalary: 200000,
           qualifications: ["1", "2"],
+          qualificationsData: [
+            {
+              description: "The first sample qualification",
+              name: "Sample Qualification 1",
+            },
+            {
+              description: "The second sample qualification",
+              name: "Sample Qualification 2",
+            },
+          ],
         },
       })
     })
