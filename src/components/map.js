@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, createRef } from "react"
 import { divIcon } from "leaflet"
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet"
 import { Box, Stack } from "@chakra-ui/react"
 import ReactDOMServer from "react-dom/server"
 import firebase from "gatsby-plugin-firebase"
 
-import MapControls from "./mapControls"
+import Sidebar from "./sidebar"
 
 const CurrentLocationMarker = ({ loc }) => {
   const locationDot = divIcon({
@@ -52,7 +52,9 @@ const MapComponent = ({ qualifications }) => {
   const [loc, setLoc] = useState(null)
   const [radius, setRadius] = useState(10)
   const [queryRadius, setQueryRadius] = useState(radius)
+  const [jobs, setJobs] = useState()
   const [markers, setMarkers] = useState([])
+  const [popupRefs, setPopupRefs] = useState({})
 
   const handleLocChange = newLoc => {
     setLoc(newLoc)
@@ -70,7 +72,7 @@ const MapComponent = ({ qualifications }) => {
           .httpsCallable("getMatchingJobListings")
 
         // get jobs
-        let jobs = (
+        let tmpJobs = (
           await getMatchingJobs({
             qualifications: qualifications?.keys(),
           })
@@ -79,7 +81,7 @@ const MapComponent = ({ qualifications }) => {
 
         // loop through jobs, getting matching listings
         await Promise.all(
-          Object.keys(jobs).map(async key => {
+          Object.keys(tmpJobs).map(async key => {
             console.log(key)
             let data = {
               job: key,
@@ -96,19 +98,27 @@ const MapComponent = ({ qualifications }) => {
                 },
               }
             }
-            console.log(JSON.stringify(data))
-            jobs[key] = {
-              ...jobs[key],
+            tmpJobs[key] = {
+              ...tmpJobs[key],
               listings: (await getMatchingJobListings(data)).data,
             }
           })
         )
+        setJobs(tmpJobs)
 
         // apply markers
         const tmpMarkers = []
-        if (jobs) {
-          Object.keys(jobs).forEach(key => {
-            jobs[key].listings.forEach(item => {
+        if (tmpJobs) {
+          Object.keys(tmpJobs).forEach(key => {
+            tmpJobs[key].listings.forEach(item => {
+              const tempRefs = popupRefs
+              tempRefs[item.id] = {
+                ref: createRef(),
+                coords: [
+                  item.data.coordinates._latitude,
+                  item.data.coordinates._longitude,
+                ],
+              }
               tmpMarkers.push(
                 <Marker
                   position={[
@@ -116,14 +126,16 @@ const MapComponent = ({ qualifications }) => {
                     item.data.coordinates._longitude,
                   ]}
                   riseOnHover
+                  key={item.id}
                 >
-                  <Popup>
+                  <Popup ref={tempRefs[item.id].ref}>
                     <b>
                       {item.data.name} - {item.data.company}
                     </b>
                   </Popup>
                 </Marker>
               )
+              setPopupRefs(tempRefs)
             })
           })
         }
@@ -133,16 +145,15 @@ const MapComponent = ({ qualifications }) => {
       }
     }
     asyncFunc()
-  }, [loc, queryRadius, qualifications])
-
+  }, [loc, queryRadius, qualifications, popupRefs])
   return (
     <Stack
-      direction={{ base: "column", md: "row" }}
+      direction={{ base: "column-reverse", md: "row" }}
       width="100%"
       height="700px"
       spacing={4}
     >
-      <MapControls
+      <Sidebar
         map={map}
         loc={loc}
         handleLocChange={handleLocChange}
@@ -150,6 +161,8 @@ const MapComponent = ({ qualifications }) => {
         setRadius={setRadius}
         setQueryRadius={setQueryRadius}
         qualifications={qualifications}
+        jobs={jobs}
+        popupRefs={popupRefs}
       />
       {typeof window !== "undefined" ? (
         <Box
