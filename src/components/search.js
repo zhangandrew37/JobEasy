@@ -1,55 +1,57 @@
-import React, {useState, useEffect} from 'react'
-import { CUIAutoComplete } from 'chakra-ui-autocomplete'
+import React, { useState, useEffect } from "react"
+import { CUIAutoComplete } from "chakra-ui-autocomplete"
 import firebase from "gatsby-plugin-firebase"
 import "firebase/firestore"
 
-
-export default function Search() {
-  const [pickerItems, setPickerItems] = useState([{}]);
-  const [selectedItems, setSelectedItems] = useState([]);
+export default function Search({ selectedItems, setSelectedItems }) {
+  const [pickerItems, setPickerItems] = useState([{}])
 
   // only runs on component mount
   useEffect(() => {
     // firebase ref
-    const db = firebase.firestore();
+    const db = firebase.firestore()
     // array of options
-    let qualifications = [];
+    let qualifications = []
     // get data from firebase
-    const snapshot = db.collection('qualifications').get().then((querySnapshot) => {
-      // handle data in callback
-      querySnapshot.forEach((doc) => {
-        // push as value label pairs into array
-        qualifications.push({
-          value: doc.data().value,
-          label: doc.data().label
+    const snapshot = db
+      .collection("qualifications")
+      .get()
+      .then(querySnapshot => {
+        // handle data in callback
+        querySnapshot.forEach(doc => {
+          // push as value label pairs into array
+          qualifications.push({
+            value: doc.id,
+            label: doc.data().label,
+          })
         })
+        // update picker
+        setPickerItems(qualifications)
       })
-      // update picker
-      setPickerItems(qualifications)
-    });
-  },[])
+  }, [])
 
-  const handleCreateItem = (item) => {
-    setPickerItems((curr) => [...curr, item]);
-    setSelectedItems((curr) => [...curr, item]);
-  };
+  const handleCreateItem = item => {
+    setPickerItems(curr => [...curr, item])
+    setSelectedItems(curr => [...curr, item])
+  }
 
-  const handleSelectedItemsChange = (selectedItems) => {
+  const handleSelectedItemsChange = selectedItems => {
     if (selectedItems) {
-      setSelectedItems(selectedItems);
+      setSelectedItems(selectedItems)
+      console.log(selectedItems)
     }
-  };
+  }
 
   return (
-      <CUIAutoComplete
-        label="Input all relevant qualifications"
-        placeholder="Type a qualification"
-        onCreateItem={handleCreateItem}
-        items={pickerItems}
-        selectedItems={selectedItems}
-        onSelectedItemsChange={(changes) =>
-          handleSelectedItemsChange(changes.selectedItems)
-        }
-      />
-  );
+    <CUIAutoComplete
+      label="Input all relevant qualifications"
+      placeholder="Type a qualification"
+      onCreateItem={handleCreateItem}
+      items={pickerItems}
+      selectedItems={selectedItems}
+      onSelectedItemsChange={changes =>
+        handleSelectedItemsChange(changes.selectedItems)
+      }
+    />
+  )
 }

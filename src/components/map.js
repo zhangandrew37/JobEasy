@@ -45,9 +45,9 @@ const CurrentLocationMarker = ({ loc }) => {
 
 /**
  * A component displaying a map and controls
- * @param {{qualifications: {Qualification.}}} param0 An object with the required qualifications
+ * @param {{qualifications: {label: string, value: string}[]}} param0 An object with the required qualifications
  */
-const MapComponent = ({ qualifications }) => {
+const MapComponent = ({ qualifications, startingLocation }) => {
   const [map, setMap] = useState(null)
   const [loc, setLoc] = useState(null)
   const [radius, setRadius] = useState(10)
@@ -74,7 +74,10 @@ const MapComponent = ({ qualifications }) => {
         // get jobs
         let tmpJobs = (
           await getMatchingJobs({
-            qualifications: qualifications?.keys(),
+            qualifications:
+              qualifications?.length > 0
+                ? qualifications.map(item => item.value)
+                : null,
           })
         ).data
         // console.log(tempJobs)
@@ -169,7 +172,7 @@ const MapComponent = ({ qualifications }) => {
           as={MapContainer}
           w="100%"
           h="100%"
-          center={[43.5598, -79.7164]}
+          center={startingLocation}
           zoom={11}
           whenCreated={setMap}
         >
