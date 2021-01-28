@@ -96,7 +96,7 @@ describe("Cloud Functions", () => {
         name: "Sample Job 2",
         description: "The second sample job",
         avgSalary: 200000,
-        qualifications: ["2"],
+        qualifications: ["1", "2"],
       })
     await firestore
       .collection("jobs")
@@ -105,7 +105,7 @@ describe("Cloud Functions", () => {
         name: "Sample Job 3",
         description: "The third sample job",
         avgSalary: 300000,
-        qualifications: ["3"],
+        qualifications: ["1", "2", "3"],
       })
 
     // Add job listings
@@ -316,18 +316,18 @@ describe("Cloud Functions", () => {
           name: "Sample Job 2",
           description: "The second sample job",
           avgSalary: 200000,
-          qualifications: ["2"],
+          qualifications: ["1", "2"],
         },
         3: {
           name: "Sample Job 3",
           description: "The third sample job",
           avgSalary: 300000,
-          qualifications: ["3"],
+          qualifications: ["1", "2", "3"],
         },
       })
     })
     it("should return any jobs that match the search", async () => {
-      const data = { qualifications: ["1", "3"] }
+      const data = { qualifications: ["1", "2"] }
 
       const wrapped = test.wrap(myFunctions.getMatchingJobs)
       const output = await wrapped(data)
@@ -338,11 +338,11 @@ describe("Cloud Functions", () => {
           avgSalary: 100000,
           qualifications: ["1"],
         },
-        3: {
-          name: "Sample Job 3",
-          description: "The third sample job",
-          avgSalary: 300000,
-          qualifications: ["3"],
+        2: {
+          name: "Sample Job 2",
+          description: "The second sample job",
+          avgSalary: 200000,
+          qualifications: ["1", "2"],
         },
       })
     })
