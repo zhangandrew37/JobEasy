@@ -23,6 +23,9 @@ import {
   Flex,
   Link,
   Text,
+  Badge,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react"
 import AlgoliaPlaces from "algolia-places-react"
 
@@ -44,46 +47,71 @@ const Sidebar = ({
     if (jobs) {
       Object.keys(jobs).forEach(jobId => {
         output.push(
-          <Heading size="md" key={jobId}>
-            {jobs[jobId].name}
-          </Heading>
-        )
-        jobs[jobId].listings.forEach(listing => {
-          output.push(
-            <Box
-              onClick={
-                popupRefs
-                  ? () => {
-                      console.log(popupRefs[listing.id])
-                      map.openPopup(
-                        popupRefs[listing.id].ref.current,
-                        popupRefs[listing.id].coords
-                      )
+          <Stack borderWidth="1px" borderRadius="lg" p={4} spacing={3}>
+            <Heading size="md" key={jobId}>
+              {jobs[jobId].name}
+            </Heading>
+            <Wrap>
+              {jobs[jobId].qualificationsData.map(data => {
+                return (
+                  <Badge
+                    as={WrapItem}
+                    borderRadius="full"
+                    px="2"
+                    colorScheme="blue"
+                  >
+                    {data.label}
+                  </Badge>
+                )
+              })}
+            </Wrap>
+            {jobs[jobId].listings.map(listing => {
+              return (
+                <Box
+                  key={listing.id}
+                  padding={4}
+                  borderWidth="1px"
+                  borderRadius="lg"
+                >
+                  <Link
+                    onClick={
+                      popupRefs
+                        ? () => {
+                            console.log(popupRefs[listing.id])
+                            map.openPopup(
+                              popupRefs[listing.id].ref.current,
+                              popupRefs[listing.id].coords
+                            )
+                          }
+                        : null
                     }
-                  : null
-              }
-              key={listing.id}
-            >
-              <Heading size="sm">
-                {listing.data.name} - {listing.data.company}
-              </Heading>
-              <Text>{listing.data.description}</Text>
-              <Text>{listing.data.salary}</Text>
-              {listing.data.links.map((link, idx) => (
-                <Link href={link} key={idx}>
-                  {link}
-                </Link>
-              ))}
-            </Box>
-          )
-        })
+                  >
+                    <Heading size="sm">
+                      {listing.data.name} &bull; {listing.data.company}
+                    </Heading>
+                  </Link>
+                  <Text>{listing.data.description}</Text>
+                  <Text>${listing.data.salary}</Text>
+                  {listing.distance ? (
+                    <Text>{listing.distance.toFixed(2)} km away</Text>
+                  ) : null}
+                  {listing.data.links.map((link, idx) => (
+                    <Link href={link} key={idx}>
+                      {link}
+                    </Link>
+                  ))}
+                </Box>
+              )
+            })}
+          </Stack>
+        )
       })
     }
     return output
   }
 
   return (
-    <Stack flex="0 0 300px" overflow="scroll">
+    <Stack flex="0 0 300px" overflowY="scroll" pr={4}>
       <Heading>Controls</Heading>
       <Button
         onClick={onOpen}
