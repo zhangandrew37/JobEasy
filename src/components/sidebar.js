@@ -111,7 +111,7 @@ const Sidebar = ({
   }
 
   return (
-    <Stack flex="0 0 300px" overflowY="scroll" pr={4}>
+    <Stack flex="0 0 400px" overflowY="scroll" pr={4}>
       <Heading>Controls</Heading>
       <Button
         onClick={onOpen}
