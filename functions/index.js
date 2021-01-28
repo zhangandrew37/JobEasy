@@ -33,6 +33,15 @@ exports.getQualifications = functions.https.onCall(async (data, context) => {
   return formattedObject
 })
 
+exports.getQualification = functions.https.onCall(async (data, context) => {
+  const qualification = data
+  if (typeof qualification === "string") {
+    return (
+      await firestore.collection("qualifications").doc(qualification).get()
+    ).data()
+  }
+})
+
 exports.getMatchingJobListings = functions.https.onCall(
   async (data, context) => {
     const job = data.job
@@ -49,9 +58,15 @@ exports.getMatchingJobListings = functions.https.onCall(
       })
     }
 
-    return (await query.get()).docs.map(doc => {
-      return { ...doc, data: doc.data() }
-    })
+    return (await query.get()).docs
+      .sort((a, b) =>
+        typeof a.distance === "number" && typeof b.distance === "number"
+          ? a.distance - b.distance
+          : 0
+      )
+      .map(doc => {
+        return { ...doc, data: doc.data() }
+      })
   }
 )
 
