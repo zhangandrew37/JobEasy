@@ -38,7 +38,6 @@ const Sidebar = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locating, setLocating] = useState(false)
-  // move to parent component
 
   const JobList = () => {
     let output = []
@@ -60,7 +59,6 @@ const Sidebar = ({
                         popupRefs[listing.id].ref.current,
                         popupRefs[listing.id].coords
                       )
-                      // map.openPopup("fuqu", [43.5598, -79.7164])
                     }
                   : null
               }
