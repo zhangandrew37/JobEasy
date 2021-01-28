@@ -75,7 +75,7 @@ const MapComponent = ({ qualifications, startingLocation }) => {
         let tmpJobs = (
           await getMatchingJobs({
             qualifications:
-              qualifications?.length > 0
+              qualifications && qualifications?.length > 0
                 ? qualifications.map(item => item.value)
                 : null,
           })
