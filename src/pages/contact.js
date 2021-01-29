@@ -11,9 +11,12 @@ const ContactPage = () => (
     <Heading>Contact Us</Heading>
     <Text>
       If there's anything wrong with the app,{" "}
-      <Link href="https://github.com/jhthenerd/ics4u0-project" color="blue.500" isExternal>
-      please open an issue on our
-      Github!
+      <Link
+        href="https://github.com/jhthenerd/ics4u0-project"
+        color="blue.500"
+        isExternal
+      >
+        please open an issue on our Github!
       </Link>
     </Text>
   </Layout>

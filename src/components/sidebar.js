@@ -51,7 +51,7 @@ const Sidebar = ({
               {jobs[jobId].name}
             </Heading>
             <Wrap>
-            {/* create a badge for each qualification */}
+              {/* create a badge for each qualification */}
               {jobs[jobId].qualificationsData.map(data => {
                 return (
                   <Badge

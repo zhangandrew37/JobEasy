@@ -26,7 +26,7 @@ function SEO({ description, lang, meta, title }) {
   )
 
   const metaDescription = description || site.siteMetadata.description
-  const defaultTitle = site.siteMetadata?site.title:""
+  const defaultTitle = site.siteMetadata ? site.title : ""
 
   return (
     <Helmet
@@ -58,7 +58,7 @@ function SEO({ description, lang, meta, title }) {
         },
         {
           name: `twitter:creator`,
-          content: site.siteMetadata?site.author:``,
+          content: site.siteMetadata ? site.author : ``,
         },
         {
           name: `twitter:title`,

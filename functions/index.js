@@ -29,7 +29,6 @@ exports.getQualifications = functions.https.onCall(async (data, context) => {
       formattedObject[documentSnapshot.id] = documentSnapshot.data()
     })
   } else {
-
     // get the data from the original snapshot
     querySnapshot.forEach(documentSnapshot => {
       formattedObject[documentSnapshot.id] = documentSnapshot.data()

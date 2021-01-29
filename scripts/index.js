@@ -11,7 +11,9 @@ const firestore = admin.firestore()
 
 const GeoFirestore = geofirestore.initializeApp(firestore)
 
-const jobListings = GeoFirestore.collection("jobs").doc("ZMWLlLid8HSsgNfCnIMB").collection("listings")
+const jobListings = GeoFirestore.collection("jobs")
+  .doc("ZMWLlLid8HSsgNfCnIMB")
+  .collection("listings")
 
 jobListings.add({
   name: "Sample Job Listing",
@@ -21,4 +23,3 @@ jobListings.add({
   links: ["https://jfss.ca"],
   coordinates: new admin.firestore.GeoPoint(43.5598, -79.7164),
 })
-
