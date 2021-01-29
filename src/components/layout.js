@@ -13,7 +13,14 @@ import { Stack, VStack } from "@chakra-ui/react"
 
 import Header from "./header"
 
+<<<<<<< Updated upstream
 const Layout = ({ children }) => {
+=======
+const Layout = ({ children, maxWidth }) => {
+  maxWidth = maxWidth ? maxWidth : "1600px"
+
+  //store site information in data
+>>>>>>> Stashed changes
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {

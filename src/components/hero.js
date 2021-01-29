@@ -8,6 +8,7 @@ import HeroImage from "../images/undraw_Co_workers_re_1i6i.svg"
 
 const Hero = () => (
   <Box>
+<<<<<<< Updated upstream
     <Router>
       <Heading size="4xl" mb={10}>
         Job Finding as Easy as a Click
@@ -31,6 +32,30 @@ const Hero = () => (
         </Box>
         <Image h="auto" flexBasis={{ base: "sm", md: "xl" }} as={HeroImage} />
         {/* <Image
+=======
+    <Heading size="4xl" mb={10}>
+      Find Jobs in One Click
+    </Heading>
+    <Flex
+      direction="row"
+      wrap={{ base: "wrap", md: "nowrap" }}
+      justify="center"
+      pb={10}
+    >
+      <Box>
+        <Heading size="xl" mb={10}>
+          A simple job finder for recent immigrants
+        </Heading>
+        <Link as={GatsbyLink} to="/search">
+          <Button size="lg" rightIcon={<FaArrowRight />} colorScheme="blue">
+            Get Started
+          </Button>
+        </Link>
+      </Box>
+      <Spacer />
+      <Image h="auto" flexBasis={{ base: "sm", md: "xl" }} as={HeroImage} />
+      {/* <Image
+>>>>>>> Stashed changes
         as={HeroImage}
         objectFit="fill"
         p={{ base: 10, md: 0 }}
