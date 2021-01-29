@@ -15,6 +15,7 @@ const HelpPage = () => (
     </Text>
     <AspectRatio ratio={16 / 9}>
       <iframe
+        title="Instructional Help Video"
         src="https://www.youtube-nocookie.com/embed/RRJZWIIyWbA"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
