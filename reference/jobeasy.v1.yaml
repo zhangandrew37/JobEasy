@@ -52,6 +52,13 @@ paths:
                     - 'null'
         description: ''
       description: Get a list of matching qualifications for autocomplete
+      parameters:
+        - schema:
+            type: string
+          in: header
+          description: application/json
+          name: Content-Type
+          required: true
   /getMatchingJobListings:
     post:
       summary: Get Matching Job Listings
@@ -207,6 +214,14 @@ paths:
                         longitude: -79.7164
                       radius: 0
         description: ''
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      description: 'Get matching job listings, given a job'
   /getMatchingJobs:
     post:
       summary: Get Matching Jobs
@@ -275,5 +290,13 @@ paths:
                     qualifications:
                       - '1'
                       - '2'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      description: Get jobs that match a list of qualifications
 components:
   schemas: {}
