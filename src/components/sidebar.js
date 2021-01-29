@@ -25,6 +25,8 @@ import {
   Badge,
   Wrap,
   WrapItem,
+  Spinner,
+  VStack,
 } from "@chakra-ui/react"
 import AlgoliaPlaces from "algolia-places-react"
 
@@ -117,6 +119,12 @@ const Sidebar = ({
           </Stack>
         )
       })
+    } else {
+      return (
+        <VStack pt={16}>
+          <Spinner />
+        </VStack>
+      )
     }
     return output
   }
