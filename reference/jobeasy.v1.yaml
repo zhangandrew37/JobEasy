@@ -1,0 +1,279 @@
+openapi: 3.0.0
+info:
+  title: jobeasy
+  version: '1.0'
+servers:
+  - url: 'https://us-central1-ics4u0-project.cloudfunctions.net'
+paths:
+  /getQualifications:
+    parameters: []
+    post:
+      summary: Get Qualifications
+      operationId: post-getQualifications
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: An object of qualifications
+                required:
+                  - data
+              examples:
+                example-1:
+                  value:
+                    data:
+                      '1':
+                        name: Sample Qualification 1
+                        description: The first sample qualification
+                      '2':
+                        name: Sample Qualification 2
+                        description: The second sample qualification
+                      '3':
+                        name: Sample Qualification 3
+                        description: The third sample qualification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  description: Autocomplete String
+                  oneOf:
+                    - properties: {}
+                  type:
+                    - string
+                    - 'null'
+        description: ''
+      description: Get a list of matching qualifications for autocomplete
+  /getMatchingJobListings:
+    post:
+      summary: Get Matching Job Listings
+      operationId: post-getMatchingJobListings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    description: An array of matching job listings
+                    items:
+                      type: object
+                      properties:
+                        exists:
+                          type: boolean
+                        id:
+                          type: string
+                          minLength: 1
+                        data:
+                          type: object
+                          properties:
+                            coordinates:
+                              type: object
+                              required:
+                                - _latitude
+                                - _longitude
+                              properties:
+                                _latitude:
+                                  type: number
+                                _longitude:
+                                  type: number
+                            name:
+                              type: string
+                              minLength: 1
+                            description:
+                              type: string
+                              minLength: 1
+                            links:
+                              type: array
+                              items:
+                                type: object
+                            salary:
+                              type: string
+                              minLength: 1
+                            g:
+                              type: object
+                              required:
+                                - geohash
+                                - geopoint
+                              properties:
+                                geohash:
+                                  type: string
+                                  minLength: 1
+                                geopoint:
+                                  type: object
+                                  required:
+                                    - _latitude
+                                    - _longitude
+                                  properties:
+                                    _latitude:
+                                      type: number
+                                    _longitude:
+                                      type: number
+                          required:
+                            - coordinates
+                            - name
+                            - description
+                            - links
+                            - salary
+                            - g
+                        distance:
+                          type: number
+                      required:
+                        - exists
+                        - id
+                        - distance
+                required:
+                  - data
+              examples:
+                example-1:
+                  value:
+                    data:
+                      - exists: true
+                        id: '1'
+                        data:
+                          coordinates:
+                            _latitude: 43.5598
+                            _longitude: -79.7164
+                          name: Sample Job Listing 1
+                          description: The first sample job listing
+                          links:
+                            - 'https://jfss.ca'
+                          salary: '100000'
+                          g:
+                            geohash: dpxrf1b61p
+                            geopoint:
+                              _latitude: 43.5598
+                              _longitude: -79.7164
+                        distance: 0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                data:
+                  type: object
+                  required:
+                    - job
+                  properties:
+                    job:
+                      type: string
+                      minLength: 1
+                      description: The job id
+                    location:
+                      type: object
+                      required:
+                        - center
+                        - radius
+                      description: The location to search around
+                      properties:
+                        center:
+                          type: object
+                          required:
+                            - latitude
+                            - longitude
+                          properties:
+                            latitude:
+                              type: number
+                            longitude:
+                              type: number
+                        radius:
+                          type: number
+              required:
+                - data
+            examples:
+              example-1:
+                value:
+                  data:
+                    job: '1'
+                    location:
+                      center:
+                        latitude: 43.5598
+                        longitude: -79.7164
+                      radius: 0
+        description: ''
+  /getMatchingJobs:
+    post:
+      summary: Get Matching Jobs
+      operationId: post-getMatchingJobs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: An object containing the matching jobs
+                required:
+                  - data
+              examples:
+                example-1:
+                  value:
+                    data:
+                      '1':
+                        name: Sample Job 1
+                        description: The first sample job
+                        avgSalary: 100000
+                        qualifications:
+                          - '1'
+                        qualificationsData:
+                          - description: The first sample qualification
+                            name: Sample Qualification 1
+                      '2':
+                        name: Sample Job 2
+                        description: The second sample job
+                        avgSalary: 200000
+                        qualifications:
+                          - '1'
+                          - '2'
+                        qualificationsData:
+                          - description: The first sample qualification
+                            name: Sample Qualification 1
+                          - description: The second sample qualification
+                            name: Sample Qualification 2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                data:
+                  type: object
+                  required:
+                    - qualifications
+                  properties:
+                    qualifications:
+                      type: array
+                      description: An array of qualification ids
+                      items:
+                        type: string
+              required:
+                - data
+            examples:
+              example-1:
+                value:
+                  data:
+                    qualifications:
+                      - '1'
+                      - '2'
+components:
+  schemas: {}
