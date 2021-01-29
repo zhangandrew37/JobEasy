@@ -49,9 +49,15 @@ exports.getMatchingJobListings = functions.https.onCall(
       })
     }
 
-    return (await query.get()).docs.map(doc => {
-      return { ...doc, data: doc.data() }
-    })
+    return (await query.get()).docs
+      .sort((a, b) =>
+        typeof a.distance === "number" && typeof b.distance === "number"
+          ? a.distance - b.distance
+          : 0
+      )
+      .map(doc => {
+        return { ...doc, data: doc.data() }
+      })
   }
 )
 
@@ -59,9 +65,21 @@ exports.getMatchingJobs = functions.https.onCall(async (data, context) => {
   // the ID of the qualification
   const qualifications = data.qualifications
   let obj = {}
-  const out = (await firestore.collection("jobs").get()).forEach(doc => {
-    obj[doc.id] = doc.data()
-  })
+  const out = await Promise.all(
+    (await firestore.collection("jobs").get()).docs.map(async doc => {
+      obj[doc.id] = await doc.data()
+      obj[doc.id].qualificationsData = await Promise.all(
+        obj[doc.id].qualifications.map(async qualification =>
+          (
+            await firestore
+              .collection("qualifications")
+              .doc(qualification)
+              .get()
+          ).data()
+        )
+      )
+    })
+  )
 
   if (!qualifications) {
     // qualifications were not specified

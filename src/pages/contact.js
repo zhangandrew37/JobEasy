@@ -4,7 +4,6 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 
 import { Heading, Text, Link } from "@chakra-ui/react"
-import { FaExternalLinkAlt } from "react-icons/fa"
 
 const ContactPage = () => (
   <Layout>

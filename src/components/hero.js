@@ -1,6 +1,16 @@
 import React from "react"
+import { Link as GatsbyLink } from "gatsby"
 
-import { Box, Heading, SimpleGrid, Image, Flex, Button } from "@chakra-ui/react"
+import {
+  Box,
+  Heading,
+  SimpleGrid,
+  Image,
+  Flex,
+  Button,
+  Spacer,
+  Link,
+} from "@chakra-ui/react"
 import { FaArrowRight } from "react-icons/fa"
 
 import HeroImage from "../images/undraw_Co_workers_re_1i6i.svg"
@@ -20,10 +30,13 @@ const Hero = () => (
         <Heading size="xl" mb={10}>
           A simple job finder for those who need it most
         </Heading>
-        <Button size="lg" rightIcon={<FaArrowRight />} colorScheme="blue">
-          Get Started
-        </Button>
+        <Link as={GatsbyLink} to="/page-2">
+          <Button size="lg" rightIcon={<FaArrowRight />} colorScheme="blue">
+            Get Started
+          </Button>
+        </Link>
       </Box>
+      <Spacer />
       <Image h="auto" flexBasis={{ base: "sm", md: "xl" }} as={HeroImage} />
       {/* <Image
         as={HeroImage}
