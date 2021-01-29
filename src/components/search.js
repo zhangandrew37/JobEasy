@@ -13,8 +13,7 @@ export default function Search({ selectedItems, setSelectedItems }) {
     // array of options
     let qualifications = []
     // get data from firebase
-    const snapshot = db
-      .collection("qualifications")
+    db.collection("qualifications")
       .get()
       .then(querySnapshot => {
         // handle data in callback

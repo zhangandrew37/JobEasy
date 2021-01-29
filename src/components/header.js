@@ -23,7 +23,7 @@ const Header = ({ siteTitle, maxWidth }) => (
       {siteTitle}
     </Heading>
     <Spacer />
-    <Link as={GatsbyLink}>
+    <Link as={GatsbyLink} to="/about">
       <Heading size="md">About</Heading>
     </Link>
     <Link as={GatsbyLink} to="/contact">
