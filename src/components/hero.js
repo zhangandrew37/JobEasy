@@ -4,12 +4,10 @@ import { Link as GatsbyLink } from "gatsby"
 import {
   Box,
   Heading,
-  SimpleGrid,
   Image,
   Flex,
   Button,
   Spacer,
-  Link,
 } from "@chakra-ui/react"
 import { FaArrowRight } from "react-icons/fa"
 
@@ -18,7 +16,7 @@ import HeroImage from "../images/undraw_Co_workers_re_1i6i.svg"
 const Hero = () => (
   <Box>
     <Heading size="4xl" mb={10}>
-      Put some hero text here
+      Find work that fits you.
     </Heading>
     <Flex
       direction="row"
@@ -28,13 +26,17 @@ const Hero = () => (
     >
       <Box>
         <Heading size="xl" mb={10}>
-          A simple job finder for those who need it most
+          A simple job finder for recent immigrants
         </Heading>
-        <Link as={GatsbyLink} to="/search">
-          <Button size="lg" rightIcon={<FaArrowRight />} colorScheme="blue">
-            Get Started
-          </Button>
-        </Link>
+        <Button
+          as={GatsbyLink}
+          to="/search"
+          size="lg"
+          rightIcon={<FaArrowRight />}
+          colorScheme="blue"
+        >
+          Get Started
+        </Button>
       </Box>
       <Spacer />
       <Image h="auto" flexBasis={{ base: "sm", md: "xl" }} as={HeroImage} />
@@ -46,12 +48,12 @@ const Hero = () => (
       /> */}
     </Flex>
 
-    <SimpleGrid columns={2} spacing={6}>
+    {/* <SimpleGrid columns={2} spacing={6}>
       <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
       <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
       <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
       <Box h="200px" bg="gray.50" rounded="md" boxShadow="md"></Box>
-    </SimpleGrid>
+    </SimpleGrid> */}
   </Box>
 )
 
