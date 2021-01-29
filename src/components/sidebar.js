@@ -53,6 +53,9 @@ const Sidebar = ({
             <Heading size="md" key={jobId}>
               {jobs[jobId].name}
             </Heading>
+            <Text>
+              Avg Salary: ${jobs[jobId].avgSalary.toLocaleString("en-CA")}
+            </Text>
             <Wrap>
               {/* create a badge for each qualification */}
               {jobs[jobId].qualificationsData.map(data => {
@@ -96,9 +99,12 @@ const Sidebar = ({
                     </Heading>
                   </Link>
                   <Text>{listing.data.description}</Text>
-                  <Text>${listing.data.salary}</Text>
+                  <Text>${listing.data.salary.toLocaleString("en-CA")}</Text>
                   {listing.distance ? (
-                    <Text>{listing.distance.toFixed(2)} km away</Text>
+                    <Text>
+                      {listing.distance.toFixed(2).toLocaleString("en-CA")} km
+                      away
+                    </Text>
                   ) : null}
                   {listing.data.links.map((link, idx) => (
                     <Link href={link} key={idx}>
