@@ -19,6 +19,10 @@ You can also call the API manually, following the specifications here: https://f
 
 Simply append the function name to the API URL and send a POST request with json in the body. The json should contain one field named data, the contents of which will vary between functions.
 
+## Interactive Documentation
+If you want to test out the functions below, check out our interactive documentation on Stoplight.
+https://jhthenerd.stoplight.io/docs/ics4u0-project/reference/jobeasy.v1.yaml
+
 ## getQualifications
 
 getQualifications takes a single string as the data parameter, and returns an object with qualifications that include the string. This was originally intended to be used as an autocomplete function internally, but proved to be unnecessary. Thus, it was never developed further. The recommend way to use this function is to call it with the data object defined as null, to retrieve all the qualifications, and use a local autocomplete library.
