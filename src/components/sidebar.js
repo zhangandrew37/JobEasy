@@ -51,6 +51,7 @@ const Sidebar = ({
               {jobs[jobId].name}
             </Heading>
             <Wrap>
+            {/* create a badge for each qualification */}
               {jobs[jobId].qualificationsData.map(data => {
                 return (
                   <Badge
@@ -64,6 +65,8 @@ const Sidebar = ({
                 )
               })}
             </Wrap>
+
+            {/* make a card for each listing */}
             {jobs[jobId].listings.map(listing => {
               return (
                 <Box
@@ -133,13 +136,15 @@ const Sidebar = ({
               aroundLatLngViaIP: true,
             }}
             onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => {
+              // close modal
               onClose()
-              console.log(suggestion)
               const tmpLoc = {
                 latlng: [suggestion.latlng.lat, suggestion.latlng.lng],
                 accuracy: 0,
               }
+              // update location
               handleLocChange(tmpLoc)
+              // go to location
               map.flyTo(tmpLoc.latlng, map.getZoom())
             }}
             onError={({ message }) => {
@@ -147,7 +152,9 @@ const Sidebar = ({
             }}
             onLocate={async () => {
               try {
+                // close modal
                 onClose()
+                // try to locate user
                 setLocating(true)
                 const tmpLoc = await new Promise((resolve, reject) => {
                   navigator.geolocation.getCurrentPosition(
@@ -160,10 +167,13 @@ const Sidebar = ({
                     err => reject(err)
                   )
                 })
+                // update location
                 handleLocChange(tmpLoc)
                 setLocating(false)
+                // go to location
                 map.flyTo(tmpLoc.latlng, map.getZoom())
               } catch (err) {
+                // cancel geolocation
                 setLocating(false)
                 console.error(`Geolocate Failed: ${err}`)
               }
