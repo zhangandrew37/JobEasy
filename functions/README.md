@@ -2,16 +2,22 @@
 
 This folder contains the serverless functions hosted on Firebase.
 
-## How to call functions
-
-The simplest way is to install the Firebase package for the platform you're developing on. Refer to Firebase's documentation for how to install the package and call functions.
-https://firebase.google.com/docs/functions/callable
+The API is located at https://us-central1-ics4u0-project.cloudfunctions.net
 
 There are 3 functions exposed to the public:
 
 1. getQualifications
 1. getMatchingJobListings
 1. getMatchingJobs
+
+## How to call functions
+
+The simplest way is to install the Firebase package for the platform you're developing on. Refer to Firebase's documentation for how to install the package and call functions.
+https://firebase.google.com/docs/functions/callable
+
+You can also call the API manually, following the specifications here: https://firebase.google.com/docs/functions/callable-reference
+
+Simply append the function name to the API URL and send a POST request with json in the body. The json should contain one field named data, the contents of which will vary between functions.
 
 ## getQualifications
 
