@@ -12,20 +12,25 @@ exports.getQualifications = functions.https.onCall(async (data, context) => {
   const querySnapshot = await qualRef.get()
   const formattedObject = {}
   if (data) {
-    // Filter by input
+    // data exists, so filtering is needed
 
     // Throw an error if data is not a string
     if (typeof data !== "string") {
       throw new Error("data object is not a string!")
     }
+
+    // filter the qualifications to only those that contain the string
     const filteredSnapshot = querySnapshot.docs.filter(snapshot => {
       return snapshot.data().name.toLowerCase().includes(data)
     })
 
+    // get the data from the filtered snapshot
     filteredSnapshot.forEach(documentSnapshot => {
       formattedObject[documentSnapshot.id] = documentSnapshot.data()
     })
   } else {
+
+    // get the data from the original snapshot
     querySnapshot.forEach(documentSnapshot => {
       formattedObject[documentSnapshot.id] = documentSnapshot.data()
     })
@@ -49,6 +54,7 @@ exports.getMatchingJobListings = functions.https.onCall(
       })
     }
 
+    // sort the docs by distance, and get the data from them
     return (await query.get()).docs
       .sort((a, b) =>
         typeof a.distance === "number" && typeof b.distance === "number"
@@ -65,9 +71,12 @@ exports.getMatchingJobs = functions.https.onCall(async (data, context) => {
   // the ID of the qualification
   const qualifications = data.qualifications
   let obj = {}
-  const out = await Promise.all(
+  await Promise.all(
+    // get all the jobs
     (await firestore.collection("jobs").get()).docs.map(async doc => {
-      obj[doc.id] = await doc.data()
+      // get the data from the function
+      obj[doc.id] = doc.data()
+      // get detailed data about each qualification to reduce number of function calls
       obj[doc.id].qualificationsData = await Promise.all(
         obj[doc.id].qualifications.map(async qualification =>
           (

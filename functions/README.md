@@ -15,7 +15,7 @@ There are 3 functions exposed to the public:
 
 ## getQualifications
 
-getQualifications takes a single string as the data parameter, and returns an object with qualifications that start with the string. This was originally intended to be used as an autocomplete function internally, but proved to be unnecessary. Thus, it was never developed further. The recommend way to use this function is to call it with the data object defined as null, to retrieve all the qualifications.
+getQualifications takes a single string as the data parameter, and returns an object with qualifications that include the string. This was originally intended to be used as an autocomplete function internally, but proved to be unnecessary. Thus, it was never developed further. The recommend way to use this function is to call it with the data object defined as null, to retrieve all the qualifications, and use a local autocomplete library.
 
 ### Example output
 
