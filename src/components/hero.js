@@ -30,7 +30,7 @@ const Hero = () => (
         <Heading size="xl" mb={10}>
           A simple job finder for those who need it most
         </Heading>
-        <Link as={GatsbyLink} to="/page-2">
+        <Link as={GatsbyLink} to="/search">
           <Button size="lg" rightIcon={<FaArrowRight />} colorScheme="blue">
             Get Started
           </Button>
