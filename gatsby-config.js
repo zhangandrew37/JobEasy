@@ -1,8 +1,8 @@
 module.exports = {
   siteMetadata: {
     title: `JobEasy`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    description: `A simple job finder for recent immigrants to Canada`,
+    author: `@jhthenerd`,
   },
   plugins: [
     {

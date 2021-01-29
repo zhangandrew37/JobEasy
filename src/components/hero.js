@@ -1,14 +1,7 @@
 import React from "react"
 import { Link as GatsbyLink } from "gatsby"
 
-import {
-  Box,
-  Heading,
-  Image,
-  Flex,
-  Button,
-  Spacer,
-} from "@chakra-ui/react"
+import { Box, Heading, Image, Flex, Button, Spacer } from "@chakra-ui/react"
 import { FaArrowRight } from "react-icons/fa"
 
 import HeroImage from "../images/undraw_Co_workers_re_1i6i.svg"
@@ -26,7 +19,7 @@ const Hero = () => (
     >
       <Box>
         <Heading size="xl" mb={10}>
-          A simple job finder for recent immigrants
+          A simple job finder for recent immigrants to Canada
         </Heading>
         <Button
           as={GatsbyLink}
