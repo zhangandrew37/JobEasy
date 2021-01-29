@@ -229,7 +229,7 @@ const Sidebar = ({
             flex="1"
             aria-label="search-radius"
             defaultValue={2.3}
-            max={11}
+            max={10}
             step={0.01}
             value={Math.log(radius)}
             onChange={number => setRadius(Math.round(Math.exp(number)))}
