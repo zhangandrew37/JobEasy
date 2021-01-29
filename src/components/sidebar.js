@@ -38,9 +38,12 @@ const Sidebar = ({
   jobs,
   popupRefs,
 }) => {
+  //Custom hook to determine whether the user set their location
   const { isOpen, onOpen, onClose } = useDisclosure()
+  // React hook to handle whether the side bar is loading the locations
   const [locating, setLocating] = useState(false)
 
+  //The job listings available to the user based on their qualifications
   const JobList = () => {
     let output = []
     if (jobs) {

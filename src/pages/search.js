@@ -7,6 +7,7 @@ import Map from "../components/map"
 import { Box } from "@chakra-ui/react"
 
 const SecondPage = () => {
+  // React hook to handle the qualifications state
   const [qualifications, setQualifications] = useState([])
   return (
     <Layout>

@@ -8,6 +8,7 @@ import firebase from "gatsby-plugin-firebase"
 import Sidebar from "./sidebar"
 
 const CurrentLocationMarker = ({ loc }) => {
+  //Your location dot's information
   const locationDot = divIcon({
     html: ReactDOMServer.renderToString(
       <svg

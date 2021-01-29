@@ -4,6 +4,7 @@ import firebase from "gatsby-plugin-firebase"
 import "firebase/firestore"
 
 export default function Search({ selectedItems, setSelectedItems }) {
+  // React hook to handle the pickerItems state
   const [pickerItems, setPickerItems] = useState([{}])
 
   // only runs on component mount
@@ -29,11 +30,13 @@ export default function Search({ selectedItems, setSelectedItems }) {
       })
   }, [])
 
+  //Creates a custom qualification
   const handleCreateItem = item => {
     setPickerItems(curr => [...curr, item])
     setSelectedItems(curr => [...curr, item])
   }
 
+  //Add/Delete the qualification
   const handleSelectedItemsChange = selectedItems => {
     if (selectedItems) {
       setSelectedItems(selectedItems)

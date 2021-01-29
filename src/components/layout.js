@@ -15,6 +15,8 @@ import Header from "./header"
 
 const Layout = ({ children, maxWidth }) => {
   maxWidth = maxWidth ? maxWidth : "1600px"
+
+  //store site information in data
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
