@@ -12,14 +12,14 @@ const firestore = admin.firestore()
 const GeoFirestore = geofirestore.initializeApp(firestore)
 
 const jobListings = GeoFirestore.collection("jobs")
-  .doc("ZMWLlLid8HSsgNfCnIMB")
+  .doc("Iypx0t9rh51pRogzO2vi")
   .collection("listings")
 
 jobListings.add({
-  name: "Sample Job Listing",
-  salary: "123456",
-  company: "Acme Corporation",
-  description: "A sample job listing",
-  links: ["https://jfss.ca"],
-  coordinates: new admin.firestore.GeoPoint(43.5598, -79.7164),
+  name: "JKL Developer",
+  salary: 102304,
+  company: "MiddleOfNowhere Inc",
+  description: "You will have to drive pretty far...",
+  links: ["https://goo.gl/maps/TsuLk4LfhJrqC6fs9"],
+  coordinates: new admin.firestore.GeoPoint(44.424892, -79.717525),
 })

@@ -45,6 +45,11 @@ const Sidebar = ({
   // React hook to handle whether the side bar is loading the locations
   const [locating, setLocating] = useState(false)
 
+  const handleChange = value => {
+    setRadius(value)
+    setQueryRadius(value)
+  }
+
   //The job listings available to the user based on their qualifications
   const JobList = () => {
     let output = []
@@ -55,12 +60,13 @@ const Sidebar = ({
             <Heading size="md" key={jobId}>
               {jobs[jobId].name}
             </Heading>
+            <Text>{jobs[jobId]?.description}</Text>
             <Text>
-              Avg Salary: ${jobs[jobId].avgSalary.toLocaleString("en-CA")}
+              Avg Salary: ${jobs[jobId]?.avgSalary?.toLocaleString("en-CA")}
             </Text>
             <Wrap>
               {/* create a badge for each qualification */}
-              {jobs[jobId].qualificationsData.map(data => {
+              {jobs[jobId]?.qualificationsData?.map(data => {
                 return (
                   <Badge
                     as={WrapItem}
@@ -75,7 +81,7 @@ const Sidebar = ({
             </Wrap>
 
             {/* make a card for each listing */}
-            {jobs[jobId].listings.map(listing => {
+            {jobs[jobId]?.listings?.map(listing => {
               return (
                 <Box
                   key={listing.id}
@@ -97,20 +103,24 @@ const Sidebar = ({
                     }
                   >
                     <Heading size="sm">
-                      {listing.data.name} &bull; {listing.data.company}
+                      {listing.data?.name} &bull; {listing.data?.company}
                     </Heading>
                   </Link>
-                  <Text>{listing.data.description}</Text>
-                  <Text>${listing.data.salary.toLocaleString("en-CA")}</Text>
+                  <Text>{listing.data?.description}</Text>
+                  <Text>
+                    {listing.data.salary
+                      ? `$${listing.data.salary.toLocaleString("en-CA")}`
+                      : "Unknown Salary"}{" "}
+                  </Text>
                   {listing.distance ? (
                     <Text>
-                      {listing.distance.toFixed(2).toLocaleString("en-CA")} km
+                      {listing.distance?.toFixed(2)?.toLocaleString("en-CA")} km
                       away
                     </Text>
                   ) : null}
-                  {listing.data.links.map((link, idx) => (
+                  {listing.data?.links?.map((link, idx) => (
                     <Link href={link} key={idx}>
-                      {link}
+                      {link.length > 50 ? `${link.substring(0, 50)}...` : link}
                     </Link>
                   ))}
                 </Box>
@@ -204,7 +214,7 @@ const Sidebar = ({
           <NumberInput
             maxW="75px"
             mr="2rem"
-            onChange={valueString => setRadius(valueString)}
+            onChange={value => setRadius(value)}
             value={radius}
             isDisabled={!loc}
           >
@@ -218,11 +228,12 @@ const Sidebar = ({
           <Slider
             flex="1"
             aria-label="search-radius"
-            defaultValue={10}
-            max={80}
-            step={0.5}
-            onChange={number => setRadius(number)}
-            onChangeEnd={number => setQueryRadius(number)}
+            defaultValue={2.3}
+            max={11}
+            step={0.01}
+            value={Math.log(radius)}
+            onChange={number => setRadius(Math.round(Math.exp(number)))}
+            onChangeEnd={number => setQueryRadius(Math.round(Math.exp(number)))}
             isDisabled={!loc}
           >
             <SliderTrack>

@@ -52,7 +52,7 @@ const MapComponent = ({ qualifications, startingLocation }) => {
   const [map, setMap] = useState(null)
   const [loc, setLoc] = useState(null)
   const [radius, setRadius] = useState(10)
-  const [queryRadius, setQueryRadius] = useState(radius)
+  const [queryRadius, setQueryRadius] = useState(10)
   const [jobs, setJobs] = useState()
   const [markers, setMarkers] = useState([])
   const [popupRefs, setPopupRefs] = useState({})
@@ -81,12 +81,11 @@ const MapComponent = ({ qualifications, startingLocation }) => {
                 : null,
           })
         ).data
-        // console.log(tempJobs)
+        console.log(queryRadius)
 
         // loop through jobs, getting matching listings
         await Promise.all(
           Object.keys(tmpJobs).map(async key => {
-            console.log(key)
             let data = {
               job: key,
             }
