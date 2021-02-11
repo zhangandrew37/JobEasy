@@ -11,8 +11,7 @@ const ContactPage = () => (
     <SEO title="About" />
     <Heading>About</Heading>
     <Text>
-      This site was developed as part of an ICS4U0 project, so will likely not
-      see that much maintenance.
+      This site was developed by a student-led team.
     </Text>
     <Text>
       If you find value in this project,{" "}
